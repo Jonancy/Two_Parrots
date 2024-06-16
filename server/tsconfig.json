@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node",
+      "target": "ES6",
+      "sourceMap": true,
+      "outDir": "dist",
+      "typeRoots": ["node_modules/@types"],
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*"],
+    "lib": ["es2015"],
+    "files": ["src/interfaces/express.d.ts"]
+  }
+  
