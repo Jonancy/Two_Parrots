@@ -10,7 +10,7 @@ import indexRoutes from "./src/routes/index.routes"
 
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 8000;
 const frontendUrl = process.env.FRONTEND_BASE_URL;
 
 // Use helmet for security headers
@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: frontendUrl,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    // methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );

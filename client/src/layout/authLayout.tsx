@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo from "/ToonsLogov2.png";
-import { ModeToggle } from "@/components/mode_toggle";
+// import { ModeToggle } from "@/components/mode_toggle";
 function authLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-w-screen min-h-screen bg-background ">
@@ -9,7 +9,7 @@ function authLayout({ children }: { children: React.ReactNode }) {
           <img src={logo} alt="logo" className=" h-full w-full object-cover" />
         </Link>
         <div className="w-fit">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
         </div>
       </header>
       {children}

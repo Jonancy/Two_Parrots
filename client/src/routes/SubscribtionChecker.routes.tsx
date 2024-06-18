@@ -1,4 +1,4 @@
-import { getUserData } from "@/utils/authStorage";
+// import { getUserData } from "@/utils/authStorage";
 import { Navigate } from "react-router-dom";
 
 export function SubscribtionChecker({
@@ -6,7 +6,8 @@ export function SubscribtionChecker({
 }: {
   children: React.ReactNode;
 }) {
-  const token = getUserData().token;
+  // const token = getUserData().token;
+  const token : boolean = true;
   const authentication = token ? true : false;
 
   if (authentication) {

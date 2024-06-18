@@ -23,3 +23,26 @@ model Users {
   createdAt DateTime @default(now())
 }
 
+enum Gender {
+  Men
+  Women
+}
+
+model Products {
+  product_id  String     @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  gender      Gender
+  category_id Int
+  updatedAt   DateTime   @updatedAt()
+  createdAt   DateTime   @default(now())
+  category    Categories @relation(fields: [category_id], references: [category_id])
+}
+
+model Categories {
+  category_id   Int        @id @default(autoincrement())
+  category_name String
+  products      Products[]
+}

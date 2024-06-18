@@ -6,7 +6,8 @@ declare global {
   namespace Express {
     export interface Request {
       user: Users;
-      // upload_urls: { [fieldname: string]: string };
+      productImage: string;
+      gallery: string[]
     }
   }
 }

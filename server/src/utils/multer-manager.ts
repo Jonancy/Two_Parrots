@@ -1,39 +1,38 @@
 import multer, { FileFilterCallback, Multer } from "multer";
+import { Request } from "express-serve-static-core";
 import CustomError from "../handlers/errors/customError";
 
-export const createMulterUpload = (uploadPath: string): Multer => {
-  const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadPath);
-    },
-    filename: (req, file, cb) => {
-      cb(null, `${Date.now()}-${file.originalname}`);
-    },
-  });
-  return multer({
-    storage: storage,
-    limits: { fileSize: 100000000 }, //10MB size limit
-    fileFilter: function (req, file, cb) {
-      checkFileType(file, cb);
-    },
-  });
-};
+// Multer storage configuration
+const storage = multer.memoryStorage();
 
-function checkFileType(
+// File type validation
+const fileFilter = (
+  req: Request,
   file: Express.Multer.File,
   cb: FileFilterCallback
-): void {
-  // Define allowed MIME types
-  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "audio/mpeg"];
-
+) => {
+  const allowedTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+    "image/svg+xml",
+  ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
     cb(
       new CustomError(
-        "Only images (jpeg, jpg, png, gif) and music files (mp3) are allowed!",
+        "Invalid file type. Only JPEG, PNG, GIF, and SVG are allowed.",
         400
       )
     );
   }
-}
+};
+
+// Multer configuration with limits and file type filter
+export const uploadFile: Multer = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5000000 }, // 5MB in bytes
+});

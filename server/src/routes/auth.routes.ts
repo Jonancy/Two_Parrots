@@ -7,13 +7,16 @@ import { userValidation } from "../validations/user.validaton";
 import { userLoginSchema, userRegisterSchema } from "../schemas/user.schema";
 import { loginLimiter } from "../middlewares/loginLimiter.middleware";
 import { authController } from "../controllers/auth.controller";
+import { handleSingleFileUpload } from "../middlewares/upload.middleware";
+import { uploadFile } from "../utils/multer-manager";
 
 export const authRoutes = Router();
 
 authRoutes.post(
-  "/registerUser",
+  "/registerUser", uploadFile.single('image'),
   userValidation.userRegisterValidation(userRegisterSchema),
   checkUserExistence,
+  handleSingleFileUpload('image', 'twoParrot'), 
   authController.registerUser
 );
 
