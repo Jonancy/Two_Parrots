@@ -29,20 +29,53 @@ enum Gender {
 }
 
 model Products {
-  product_id  String     @id @default(uuid())
+  id          String            @id @default(uuid())
   name        String
   description String
   price       Float
   stock       Int
   gender      Gender
   category_id Int
-  updatedAt   DateTime   @updatedAt()
-  createdAt   DateTime   @default(now())
-  category    Categories @relation(fields: [category_id], references: [category_id])
+  is_deleted  Boolean           @default(false)
+  view        Boolean           @default(true)
+  updatedAt   DateTime          @updatedAt()
+  createdAt   DateTime          @default(now())
+  category    Categories        @relation(fields: [category_id], references: [category_id])
+  variants    ProductVariants[]
 }
 
 model Categories {
   category_id   Int        @id @default(autoincrement())
   category_name String
   products      Products[]
+}
+
+model ProductVariants {
+  id         Int             @id @default(autoincrement())
+  color      String
+  product    Products        @relation(fields: [product_id], references: [id])
+  product_id String
+  sizes      ProductSizes[]
+  images     ProductImages[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductSizes {
+  id        Int             @id @default(autoincrement())
+  size      String
+  stock     Int
+  variant   ProductVariants @relation(fields: [variantId], references: [id])
+  variantId Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model ProductImages {
+  id        Int             @id @default(autoincrement())
+  url       String
+  variant   ProductVariants @relation(fields: [variantId], references: [id])
+  variantId Int
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }
