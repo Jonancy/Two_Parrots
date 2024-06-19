@@ -4,7 +4,6 @@ import { IUserDetails } from "../interfaces/user.interfaces";
 import CustomError from "../handlers/errors/customError";
 import { successHandler } from "../handlers/success/successHandler";
 
-
 class UserController {
   //For getting all users
   getUserDetails = async (
@@ -40,9 +39,6 @@ class UserController {
       next(e);
     }
   };
-
-
-
 }
 
 export const userController = new UserController();

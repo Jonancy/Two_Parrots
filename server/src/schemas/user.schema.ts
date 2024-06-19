@@ -6,6 +6,7 @@ export const userRegisterSchema: yup.ObjectSchema<UserRegisterDTO> = yup.object(
     name: yup.string().required(),
     email: yup.string().email().required(),
     password: yup.string().min(6).required(),
+    phoneNumber: yup.string().length(9).required(),
   }
 );
 

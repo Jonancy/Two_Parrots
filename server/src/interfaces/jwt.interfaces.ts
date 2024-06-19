@@ -1,14 +1,10 @@
 import { JwtPayload } from "jsonwebtoken";
 
-
 export interface JwtRefreshPayloadExtended extends JwtPayload {
-  name: string;
-  id: string;
-  email: string;
-  picture: string;
+  userId: string;
 }
 
 export interface JwtAccessPayloadExtended extends JwtPayload {
-  id: string;
-  email: string;
+  userId: string;
+  role: string; //Number format ma aye pani string ma huncha enum
 }

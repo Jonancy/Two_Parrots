@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
-import { UserLoginDTO, UserRegisterDTO } from "../dtos/user.dto";
-import { userService } from "../services/user.service";
-import CustomError from "../handlers/errors/customError";
+import { UserLoginDTO, UserRegisterDTO } from "../../dtos/user.dto";
+import { userService } from "../../services/user.service";
+import CustomError from "../../handlers/errors/customError";
 
 export const checkUserExistence = async (
   req: Request<{}, {}, UserRegisterDTO>,

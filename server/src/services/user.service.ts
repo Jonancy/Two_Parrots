@@ -3,57 +3,47 @@ import { UserRegisterDTO } from "../dtos/user.dto";
 import { prisma } from "../..";
 import { IUserDetails } from "../interfaces/user.interfaces";
 
-
 class UserService {
   //For getting all users
   getUserDetails = async (): Promise<IUserDetails[]> => {
     const userDetails = await prisma.users.findMany({
-      select: { id: true, name: true, email: true, picture: true },
+      select: {
+        userId: true,
+        name: true,
+        email: true,
+        picture: true,
+        phoneNumber: true,
+      },
     });
 
-    return userDetails.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      picture: user.picture,
-    }));
+    return userDetails;
+    // if (userDetails.length > 0) return userDetails;
+
+    // return null;
   };
 
   //For registration of the user
   registerUser = async (userDTO: UserRegisterDTO): Promise<boolean> => {
-    const userDetails = await prisma.users.create({
+    const user = await prisma.users.create({
       data: userDTO,
     });
 
-    if (userDetails) {
-      return true;
-    }
-
-    return false;
+    return !!user;
   };
 
   //Getting user by Id
-  getUserById = async (id: string): Promise<Users> => {
-    const user = await prisma.users.findFirst({ where: { id: id } });
+  getUserById = async (id: string): Promise<Users | null> => {
+    const user = await prisma.users.findFirst({ where: { userId: id } });
 
-    if (user) {
-      return user;
-    } else {
-      return null;
-    }
+    return user;
   };
 
   //Getting user by email
-  getUserByEmail = async (email: string): Promise<Users> => {
+  getUserByEmail = async (email: string): Promise<Users | null> => {
     const user = await prisma.users.findFirst({ where: { email: email } });
 
-    if (user) {
-      return user;
-    } else {
-      return null;
-    }
+    return user;
   };
-
 }
 
 export const userService = new UserService();

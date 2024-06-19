@@ -5,8 +5,8 @@ import cors from "cors";
 import { errorHandler } from "./src/handlers/errors/errorHandler";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import indexRoutes from "./src/routes/index.routes"
-
+import indexRoutes from "./src/routes/index.routes";
+import { handleNotFound } from "./src/handlers/errors/error404Handler";
 
 dotenv.config();
 const app = express();
@@ -33,7 +33,7 @@ app.use(
   (req, res, next) => {
     res.header("Access-Control-Allow-Origin", frontendUrl);
     res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Cross-Origin-Resource-Policy", "cross-origin"); // With this config file haru read garna milcha 
+    res.header("Cross-Origin-Resource-Policy", "cross-origin"); // With this config file haru read garna milcha
 
     next();
   },
@@ -45,6 +45,7 @@ app.use(express.json());
 export const prisma = new PrismaClient();
 app.use("/api/v1", indexRoutes);
 
+app.use(handleNotFound);
 app.use(errorHandler);
 
 app.listen(port, () => {

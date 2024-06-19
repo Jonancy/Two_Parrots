@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express-serve-static-core";
 import { UserLoginDTO, UserRegisterDTO } from "../dtos/user.dto";
 import { checkPassword, hashPassword } from "../utils/bcryptPass";
 import { userService } from "../services/user.service";
-
 import {
   jwtAccessCreation,
   jwtRefreshCreation,
@@ -10,7 +9,10 @@ import {
 } from "../utils/token-manager";
 import { successHandler } from "../handlers/success/successHandler";
 import CustomError from "../handlers/errors/customError";
-import { JwtRefreshPayloadExtended } from "../interfaces/jwt.interfaces";
+import {
+  JwtAccessPayloadExtended,
+  JwtRefreshPayloadExtended,
+} from "../interfaces/jwt.interfaces";
 import { IUserDetails } from "../interfaces/user.interfaces";
 
 //!Class for controlling authentication and authorization like login, regi,logout, refresh tokens, etc.
@@ -40,7 +42,6 @@ class AuthController {
     }
   };
 
-
   loginUser = async (
     req: Request<{}, {}, UserLoginDTO>,
     res: Response,
@@ -58,21 +59,25 @@ class AuthController {
         throw new CustomError("Password did'not matched", 400);
       }
 
-      const jwtPayload: JwtRefreshPayloadExtended = {
-        name: injectDTO.name,
-        id: injectDTO.id,
-        email: injectDTO.email,
-        picture: injectDTO.picture,
+      const jwtRefreshPayload: JwtRefreshPayloadExtended = {
+        userId: injectDTO.userId,
       };
 
-      const jwt = jwtRefreshCreation(jwtPayload);
-      const accessToken = jwtAccessCreation(jwtPayload);
+      const jwtAccessPayload: JwtAccessPayloadExtended = {
+        userId: injectDTO.userId,
+        role: injectDTO.role,
+      };
 
+      const jwt = jwtRefreshCreation(jwtRefreshPayload);
+      const accessToken = jwtAccessCreation(jwtAccessPayload);
+
+      //!Extend gareko userdetails lai with token variable
       const userDetails: IUserDetails & { token: string } = {
-        id: injectDTO.id,
+        userId: injectDTO.userId,
         name: injectDTO.name,
         email: injectDTO.email,
         picture: injectDTO.picture,
+        phoneNumber: injectDTO.phoneNumber,
         token: accessToken,
       };
 
@@ -113,9 +118,9 @@ class AuthController {
         throw new CustomError("User not found", 404);
       }
 
-      const jwtPayload = {
-        id: user.id,
-        email: user.email,
+      const jwtPayload: JwtAccessPayloadExtended = {
+        userId: user.userId,
+        role: user.role,
       };
 
       const accessToken = jwtAccessCreation(jwtPayload);
@@ -129,12 +134,15 @@ class AuthController {
   logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const cookies = req.cookies;
-      if (!cookies?.token) throw new CustomError("No token recieved", 204); //No content
+
+      if (!cookies?.token) throw new CustomError("No token recieved", 204);
+
       res.clearCookie("token", {
         httpOnly: true,
         sameSite: "strict",
         secure: true,
       });
+
       return successHandler(res, 200, null, "Cookie cleared logged out");
     } catch (e) {
       next(e);

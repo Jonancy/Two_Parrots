@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import streamifier from "streamifier";
-import CustomError from "../handlers/errors/customError";
-import cloudinary from "../config/cloud/cloudinary.config";
-
-
+import CustomError from "../../handlers/errors/customError";
+import cloudinary from "../../config/cloud/cloudinary.config";
 
 // Function to handle file upload to Cloudinary
 const uploadToCloudinary = async (
@@ -46,11 +44,13 @@ export const handleSingleFileUpload = (fieldName: string, folder: string) => {
   };
 };
 
-
-export const handleMultipleFileUpload = (fieldNames: string[], folder: string) => {
+export const handleMultipleFileUpload = (
+  fieldNames: string[],
+  folder: string
+) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const uploadedFiles: string[] = []
+      const uploadedFiles: string[] = [];
 
       // Check if any files were uploaded
       if (!req.files) {
@@ -62,7 +62,9 @@ export const handleMultipleFileUpload = (fieldNames: string[], folder: string) =
         const files = req.files[fieldName];
 
         if (!files) {
-          return next(new CustomError(`No file uploaded for ${fieldName}`, 400));
+          return next(
+            new CustomError(`No file uploaded for ${fieldName}`, 400)
+          );
         }
 
         if (Array.isArray(files)) {
@@ -78,8 +80,8 @@ export const handleMultipleFileUpload = (fieldNames: string[], folder: string) =
           const imageUrl = await uploadToCloudinary(fileBuffer, folder);
           uploadedFiles[fieldName] = imageUrl;
         }
-      } 
-      console.log("pass",uploadedFiles);
+      }
+      console.log("pass", uploadedFiles);
       req.gallery = uploadedFiles;
 
       next();

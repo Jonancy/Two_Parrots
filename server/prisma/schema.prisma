@@ -13,14 +13,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  Admin
+  User
+}
+
 model Users {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  picture   String?  @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
-  password  String
-  updatedAt DateTime @updatedAt()
-  createdAt DateTime @default(now())
+  userId      String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phoneNumber String
+  picture     String?  @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
+  password    String
+  location    String?
+  role        Role     @default(User)
+  updatedAt   DateTime @updatedAt()
+  createdAt   DateTime @default(now())
 }
 
 enum Gender {
@@ -29,53 +37,52 @@ enum Gender {
 }
 
 model Products {
-  id          String            @id @default(uuid())
+  productId   String            @id @default(cuid())
   name        String
   description String
   price       Float
-  stock       Int
   gender      Gender
-  category_id Int
-  is_deleted  Boolean           @default(false)
+  categoryId  String
+  isDeleted   Boolean           @default(false)
   view        Boolean           @default(true)
   updatedAt   DateTime          @updatedAt()
   createdAt   DateTime          @default(now())
-  category    Categories        @relation(fields: [category_id], references: [category_id])
+  category    Categories        @relation(fields: [categoryId], references: [categoryId])
   variants    ProductVariants[]
 }
 
 model Categories {
-  category_id   Int        @id @default(autoincrement())
-  category_name String
-  products      Products[]
+  categoryId   String     @id @default(cuid())
+  categoryName String
+  products     Products[]
 }
 
 model ProductVariants {
-  id         Int             @id @default(autoincrement())
-  color      String
-  product    Products        @relation(fields: [product_id], references: [id])
-  product_id String
-  sizes      ProductSizes[]
-  images     ProductImages[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  variantId String          @id @default(cuid())
+  color     String
+  product   Products        @relation(fields: [productId], references: [productId])
+  productId String
+  sizes     ProductSizes[]
+  images    ProductImages[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 }
 
 model ProductSizes {
-  id        Int             @id @default(autoincrement())
+  sizeId    String          @id @default(cuid())
   size      String
   stock     Int
-  variant   ProductVariants @relation(fields: [variantId], references: [id])
-  variantId Int
+  variant   ProductVariants @relation(fields: [variantId], references: [variantId])
+  variantId String
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
 }
 
 model ProductImages {
-  id        Int             @id @default(autoincrement())
-  url       String
-  variant   ProductVariants @relation(fields: [variantId], references: [id])
-  variantId Int
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  productImageId String          @id @default(cuid())
+  url            String
+  variant        ProductVariants @relation(fields: [variantId], references: [variantId])
+  variantId      String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
