@@ -24,5 +24,5 @@ export interface ISize {
 }
 
 export interface IImage {
-  url: string;
+  url: string | File;
 }

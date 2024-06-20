@@ -1,5 +1,6 @@
+import { Products } from "@prisma/client";
 import { prisma } from "../..";
-import { ICategory } from "../interfaces/product.interfaces";
+import { ICategory, IProduct } from "../interfaces/product.interfaces";
 
 class ProductService {
   addCategories = async (categoryDTO: ICategory): Promise<boolean> => {
@@ -25,6 +26,27 @@ class ProductService {
     });
 
     return category;
+  };
+
+  createProduct = async (data: IProduct): Promise<Products | null> => {
+    const product = await prisma.products.create({
+      data: {
+        ...data,
+        variants: {
+          create: data.variants.map((variant) => ({
+            ...variant,
+            sizes: {
+              create: variant.sizes,
+            },
+            images: {
+              create: variant.images,
+            },
+          })),
+        },
+      },
+    });
+
+    return product;
   };
 }
 

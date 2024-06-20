@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { userRoutes } from "./user.routes";
-import { authRoutes } from "./auth.routes";
-import { productRoutes } from "./product.routes";
-import { categoryRoutes } from "./category.routes";
+import { userRoutes } from "./client/user.routes";
+import { authRoutes } from "./client/auth.routes";
+import { productRoutes } from "./admin/product.routes";
+import { categoryRoutes } from "./admin/category.routes";
 
 const indexRoutes = Router();
 

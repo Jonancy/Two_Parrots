@@ -12,6 +12,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8000;
 const frontendUrl = process.env.FRONTEND_BASE_URL;
+console.log(frontendUrl);
 
 // Use helmet for security headers
 app.use(helmet());
