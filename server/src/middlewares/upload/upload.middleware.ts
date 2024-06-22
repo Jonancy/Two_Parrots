@@ -50,7 +50,7 @@ export const handleMultipleFileUpload = (
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const uploadedFiles: { [key: string]: string[] } = {};
+      let uploadedFiles: string[] = [];
       console.log(req.body);
 
       // Check if any files were uploaded
@@ -75,7 +75,7 @@ export const handleMultipleFileUpload = (
               return await uploadToCloudinary(fileBuffer, folder);
             })
           );
-          uploadedFiles[fieldName] = uploadedFileUrls;
+          uploadedFiles = uploadedFileUrls;
         }
       }
       console.log("pass", uploadedFiles);

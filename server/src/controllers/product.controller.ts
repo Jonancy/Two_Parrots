@@ -1,15 +1,12 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
 import { productService } from "../services/product.service";
-import {
-  ICategory,
-  IProduct,
-  IVariant,
-} from "../interfaces/product.interfaces";
+import { ICategory, IVariant } from "../interfaces/product.interfaces";
 import { successHandler } from "../handlers/success/successHandler";
 import CustomError from "../handlers/errors/customError";
+import { IProductDTO } from "../dtos/product.dto";
 
 class ProductController {
-  addProducts = async (
+  createCategory = async (
     req: Request<{}, {}, ICategory>,
     res: Response,
     next: NextFunction
@@ -41,34 +38,68 @@ class ProductController {
   };
 
   createProduct = async (
-    req: Request<{}, {}, IProduct>,
+    req: Request<{}, {}, IProductDTO>,
     res: Response,
     next: NextFunction
   ) => {
     try {
       const productDTO = req.body;
 
-      const variants: IVariant[] = productDTO.variants;
+      const createdProduct = await productService.createProduct(productDTO);
 
-      // Assign uploaded image URLs to the corresponding variants
-      const uploadedFiles = req.images as { [key: string]: string[] };
-      for (const color in uploadedFiles) {
-        const variantIndex = variants.findIndex((variant) =>
-          variant.color.toLowerCase().includes(color)
+      if (!createdProduct) {
+        throw new CustomError(
+          "Something went wrong while creation of the product ",
+          500
         );
-        if (variantIndex !== -1) {
-          const variant = variants[variantIndex];
-          if (!variant.images) {
-            variant.images = [];
-          }
-          variant.images = uploadedFiles[color].map((url: string) => ({ url }));
-        }
       }
 
-      const product: IProduct = { ...productDTO, variants };
+      successHandler(res, 201, null, "Product added successfully");
+    } catch (e) {
+      next(e);
+    }
+  };
 
-      const createdProduct = await productService.createProduct(product);
-      res.status(201).json(createdProduct);
+  createProductVariants = async (
+    req: Request<{ productId: string }, {}, IVariant>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const variantDTO = req.body;
+      const productId = req.params.productId;
+      const files = req.images;
+      console.log(variantDTO);
+
+      const createVariant = await productService.createProductVariants(
+        productId,
+        variantDTO,
+        files
+      );
+
+      if (!createVariant) {
+        throw new CustomError(
+          "Something went wrong while addition of the variant ",
+          500
+        );
+      }
+
+      successHandler(
+        res,
+        201,
+        null,
+        "Variant of the product added successfully"
+      );
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const products = await productService.getAllProducts();
+
+      successHandler(res, 200, products, "All products");
     } catch (e) {
       next(e);
     }

@@ -3,19 +3,29 @@ import { productController } from "../../controllers/product.controller";
 import { AdminAuthRole } from "../../middlewares/auth/roleAuth.middleware";
 import { handleMultipleFileUpload } from "../../middlewares/upload/upload.middleware";
 import { uploadFile } from "../../utils/multer-manager";
+import { checkProductExists } from "../../middlewares/product/product.middleware";
 
 export const productRoutes = Router();
 
 productRoutes.post(
-  "/addCategories",
+  "/createCategory",
   AdminAuthRole(),
-  productController.addProducts
+  productController.createCategory
 );
 
 productRoutes.post(
-  "/addProducts",
+  "/createProduct",
   // AdminAuthRole(),
-  uploadFile.fields([{ name: "image", maxCount: 5 }]),
-  handleMultipleFileUpload(["image"], "twoParrot"),
   productController.createProduct
 );
+
+productRoutes.post(
+  "/:productId/createVariant",
+  // AdminAuthRole(),
+  uploadFile.fields([{ name: "image", maxCount: 10 }]),
+  checkProductExists,
+  handleMultipleFileUpload(["image"], "twoParrot"),
+  productController.createProductVariants
+);
+
+productRoutes.get("/getProducts", productController.getAllProducts);

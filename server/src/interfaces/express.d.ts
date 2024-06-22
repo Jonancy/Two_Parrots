@@ -7,7 +7,7 @@ declare global {
     export interface Request {
       user: Users;
       productImage: string;
-      images: { [key: string]: string[] };
+      images: string[];
     }
   }
 }

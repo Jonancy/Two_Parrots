@@ -7,8 +7,8 @@ import { categorySchema } from "../../schemas/product.schema";
 export const categoryRoutes = Router();
 
 categoryRoutes.post(
-  "/addCategory",
+  "/createCategory",
   AdminAuthRole(),
   validateSchema(categorySchema),
-  productController.addProducts
+  productController.createCategory
 );
