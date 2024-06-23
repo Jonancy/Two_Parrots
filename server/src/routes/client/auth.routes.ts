@@ -1,15 +1,15 @@
 import { Router } from "express";
 
-import { userLoginSchema, userRegisterSchema } from "../schemas/user.schema";
-import { loginLimiter } from "../middlewares/auth/loginLimiter.middleware";
-import { authController } from "../controllers/auth.controller";
-import { handleSingleFileUpload } from "../middlewares/upload/upload.middleware";
-import { uploadFile } from "../utils/multer-manager";
-import { validateSchema } from "../validations/validator";
+import { userLoginSchema, userRegisterSchema } from "../../schemas/user.schema";
+import { loginLimiter } from "../../middlewares/auth/loginLimiter.middleware";
+import { authController } from "../../controllers/auth.controller";
+import { handleSingleFileUpload } from "../../middlewares/upload/upload.middleware";
+import { uploadFile } from "../../utils/multer-manager";
+import { validateSchema } from "../../validations/validator";
 import {
   checkUserExistence,
   checkUserLogin,
-} from "../middlewares/user/user.middleware";
+} from "../../middlewares/user/user.middleware";
 
 export const authRoutes = Router();
 

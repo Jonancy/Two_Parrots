@@ -6,7 +6,7 @@ export interface ICategory {
 export interface IProduct {
   name: string;
   description: string;
-  price: string;
+  price: number;
   gender: "Men" | "Women";
   categoryId: string;
   variants: IVariant[];
@@ -24,5 +24,5 @@ export interface ISize {
 }
 
 export interface IImage {
-  url: string;
+  url: string | File;
 }

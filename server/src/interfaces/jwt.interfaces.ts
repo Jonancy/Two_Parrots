@@ -6,5 +6,5 @@ export interface JwtRefreshPayloadExtended extends JwtPayload {
 
 export interface JwtAccessPayloadExtended extends JwtPayload {
   userId: string;
-  role: string; //Number format ma aye pani string ma huncha enum
+  role: string;
 }
