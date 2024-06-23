@@ -75,8 +75,8 @@ export default function AddProducts() {
       form.append("gender", formData.gender);
       form.append("categoryId", formData.categoryId);
       form.append("variants", JSON.stringify(formData.variants));
-      formData.variants.forEach((variant, index) => {
-        variant.images.forEach((image, idx) => {
+      formData.variants.forEach((variant) => {
+        variant.images.forEach((image) => {
           form.append(`image`, image.url);
         });
       });
@@ -91,7 +91,7 @@ export default function AddProducts() {
 
       // alert("Product added successfully!");
     } catch (error) {
-      console.error("Error adding product:", error.message);
+      console.error("Error adding product:", error);
       // alert("Failed to add product. Please try again.");
     }
   };
