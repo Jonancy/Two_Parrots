@@ -6,7 +6,12 @@ import { Request, Response } from "express-serve-static-core";
 import { uploadFile } from "../../utils/multer-manager";
 import { validateSchema } from "../../validations/validator";
 import { checkUserExistence } from "../../middlewares/user/user.middleware";
+import { userOrderRoutes } from "./order.routes";
+import { userProductRoutes } from "./product.routes";
+
 export const userRoutes = Router();
+userRoutes.use("/order", userOrderRoutes);
+userRoutes.use("/product", userProductRoutes);
 
 userRoutes.get("/getUser", userController.getUserDetails);
 

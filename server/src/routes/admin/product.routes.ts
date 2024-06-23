@@ -1,25 +1,18 @@
 import { Router } from "express";
 import { productController } from "../../controllers/product.controller";
-import { AdminAuthRole } from "../../middlewares/auth/roleAuth.middleware";
 import { handleMultipleFileUpload } from "../../middlewares/upload/upload.middleware";
 import { uploadFile } from "../../utils/multer-manager";
 import { checkProductExists } from "../../middlewares/product/product.middleware";
 
-export const productRoutes = Router();
+export const adminProductRoutes = Router();
 
-productRoutes.post(
-  "/createCategory",
-  AdminAuthRole(),
-  productController.createCategory
-);
-
-productRoutes.post(
+adminProductRoutes.post(
   "/createProduct",
   // AdminAuthRole(),
   productController.createProduct
 );
 
-productRoutes.post(
+adminProductRoutes.post(
   "/:productId/createVariant",
   // AdminAuthRole(),
   uploadFile.fields([{ name: "image", maxCount: 10 }]),
@@ -28,4 +21,4 @@ productRoutes.post(
   productController.createProductVariants
 );
 
-productRoutes.get("/getProducts", productController.getAllProducts);
+adminProductRoutes.get("/getProducts", productController.getAllProducts);

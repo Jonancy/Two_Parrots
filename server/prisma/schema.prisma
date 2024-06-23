@@ -29,6 +29,7 @@ model Users {
   role        Role     @default(User)
   updatedAt   DateTime @updatedAt()
   createdAt   DateTime @default(now())
+  orders      Orders[]
 }
 
 enum Gender {
@@ -49,6 +50,7 @@ model Products {
   createdAt   DateTime          @default(now())
   category    Categories        @relation(fields: [categoryId], references: [categoryId])
   variants    ProductVariants[]
+  OrderItem   OrderItems[]
 }
 
 model Categories {
@@ -66,6 +68,7 @@ model ProductVariants {
   images    ProductImages[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+  OrderItem OrderItems[]
 }
 
 model ProductSizes {
@@ -76,6 +79,7 @@ model ProductSizes {
   variantId String
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
+  OrderItem OrderItems[]
 }
 
 model ProductImages {
@@ -85,4 +89,41 @@ model ProductImages {
   variantId      String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+}
+
+model Orders {
+  orderId     String       @id @default(cuid())
+  user        Users        @relation(fields: [userId], references: [userId])
+  userId      String
+  phoneNumber String
+  location    String
+  orderItems  OrderItems[]
+  totalPrice  Float
+  status      OrderStatus  @default(Pending)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt()
+}
+
+enum OrderStatus {
+  Pending
+  Confirmed
+  Shipped
+  Delivered
+  Cancelled
+}
+
+model OrderItems {
+  orderItemId String          @id @default(cuid())
+  order       Orders          @relation(fields: [orderId], references: [orderId])
+  orderId     String
+  product     Products        @relation(fields: [productId], references: [productId])
+  productId   String
+  variant     ProductVariants @relation(fields: [variantId], references: [variantId])
+  variantId   String
+  size        ProductSizes    @relation(fields: [sizeId], references: [sizeId])
+  sizeId      String
+  quantity    Int
+  price       Float
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt()
 }
