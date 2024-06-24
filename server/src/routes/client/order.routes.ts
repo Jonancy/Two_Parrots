@@ -3,7 +3,7 @@ import { orderController } from "../../controllers/order.controller";
 
 export const userOrderRoutes = Router();
 
-userOrderRoutes.post("/order/:userId", orderController.createOrder);
+userOrderRoutes.post("/:userId", orderController.createOrder);
 
 userOrderRoutes.get(
   "/order/getAllOrderDetails",

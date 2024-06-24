@@ -6,15 +6,13 @@ import { successHandler } from "../handlers/success/successHandler";
 
 class OrderController {
   createOrder = async (
-    req: Request<{ userId: string }, {}, IOrderDTO>,
+    req: Request<{}, {}, IOrderDTO>,
     res: Response,
     next: NextFunction
   ) => {
     try {
       const orderDTO = req.body;
       console.log(orderDTO);
-
-      const userId = req.params.userId;
 
       const totalPrice = orderDTO.orderItems.reduce(
         (acc, item) => acc + item.price * item.quantity,
@@ -23,7 +21,6 @@ class OrderController {
 
       const orderMain: IOrderDTO = {
         ...orderDTO,
-        userId,
         totalPrice,
       };
       const order = await orderService.createOrder(orderMain);

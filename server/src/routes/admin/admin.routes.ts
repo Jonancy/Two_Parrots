@@ -5,6 +5,6 @@ import { adminOrderRoutes } from "./order.routes";
 
 export const adminRoutes = Router();
 
-adminRoutes.use("/category", categoryRoutes);
-adminRoutes.use("/product", adminProductRoutes);
-adminRoutes.use("/order", adminOrderRoutes);
+adminRoutes.use("/categorys", categoryRoutes);
+adminRoutes.use("/products", adminProductRoutes);
+adminRoutes.use("/orders", adminOrderRoutes);

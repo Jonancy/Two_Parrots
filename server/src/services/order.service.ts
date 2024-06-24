@@ -31,7 +31,8 @@ class OrderService {
         orderId: true,
         status: true,
         totalPrice: true,
-        user: { select: userSelectFields },
+        userName: true,
+        email: true,
         createdAt: true,
         orderItems: {
           select: {

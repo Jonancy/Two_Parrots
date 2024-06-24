@@ -89,10 +89,11 @@ class ProductService {
     return productVariant;
   };
 
-  getAllProducts = async () => {
+  getAllProducts = async (): Promise<IProduct[]> => {
     const product = await prisma.products.findMany({
       // where: { view: { not: false }, isDeleted: { not: false } },
       select: {
+        productId: true,
         name: true,
         gender: true,
         isDeleted: true,
@@ -101,13 +102,14 @@ class ProductService {
         description: true,
         createdAt: true,
         category: {
-          select: { categoryName: true },
+          select: { categoryId: true, categoryName: true },
         },
         variants: {
           select: {
+            variantId: true,
             color: true,
-            images: { select: { url: true } },
-            sizes: { select: { size: true, stock: true } },
+            images: { select: { productImageId: true, url: true } },
+            sizes: { select: { sizeId: true, size: true, stock: true } },
           },
         },
       },

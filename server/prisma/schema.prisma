@@ -29,7 +29,6 @@ model Users {
   role        Role     @default(User)
   updatedAt   DateTime @updatedAt()
   createdAt   DateTime @default(now())
-  orders      Orders[]
 }
 
 enum Gender {
@@ -93,8 +92,8 @@ model ProductImages {
 
 model Orders {
   orderId     String       @id @default(cuid())
-  user        Users        @relation(fields: [userId], references: [userId])
-  userId      String
+  userName    String
+  email       String
   phoneNumber String
   location    String
   orderItems  OrderItems[]

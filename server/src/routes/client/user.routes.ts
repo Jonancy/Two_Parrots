@@ -10,10 +10,10 @@ import { userOrderRoutes } from "./order.routes";
 import { userProductRoutes } from "./product.routes";
 
 export const userRoutes = Router();
-userRoutes.use("/order", userOrderRoutes);
-userRoutes.use("/product", userProductRoutes);
+userRoutes.use("/orders", userOrderRoutes);
+userRoutes.use("/products", userProductRoutes);
 
-userRoutes.get("/getUser", userController.getUserDetails);
+userRoutes.get("/getUsers", userController.getUserDetails);
 
 userRoutes.get("/getSpecificUser/:id", userController.getSpecificUser);
 

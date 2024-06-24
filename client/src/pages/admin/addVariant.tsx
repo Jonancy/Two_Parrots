@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import { addProductVariant } from "@/services/admin/product.service";
 
 const sizeOptions = ["S", "M", "L", "XL", "XXL"];
+const colorOptions = ["red", "blue", "green", "yellow", "purple"];
 
 const CreateProductVariantForm: React.FC = () => {
   const id: string = "clxok5pof0003vyecjxg4s025";
@@ -46,7 +47,9 @@ const CreateProductVariantForm: React.FC = () => {
     handleSizeChange(index, "size", size);
   };
 
-  // console.log(formik.values);
+  const handleColorOptionClick = (color: string) => {
+    formik.setFieldValue("color", color);
+  };
 
   return (
     <div className="max-w-md mx-auto mt-6 p-6 bg-white rounded-lg shadow-xl">
@@ -59,6 +62,21 @@ const CreateProductVariantForm: React.FC = () => {
           >
             Color:
           </label>
+          <div className="flex mb-2">
+            {colorOptions.map((color) => (
+              <button
+                type="button"
+                key={color}
+                className={`w-8 h-8 rounded-full mr-2 ${
+                  formik.values.color === color
+                    ? "ring-2 ring-offset-2 ring-indigo-500"
+                    : ""
+                }`}
+                style={{ backgroundColor: color }}
+                onClick={() => handleColorOptionClick(color)}
+              />
+            ))}
+          </div>
           <input
             type="text"
             id="color"
@@ -66,6 +84,7 @@ const CreateProductVariantForm: React.FC = () => {
             value={formik.values.color}
             onChange={formik.handleChange}
             required
+            readOnly
           />
         </div>
         <fieldset className="mb-4">

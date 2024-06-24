@@ -1,4 +1,4 @@
-export interface IOrderItemDTO {
+export interface IOrderItemsDTO {
   productId: string;
   variantId: string;
   sizeId: string;
@@ -12,5 +12,5 @@ export interface IOrderDTO {
   totalPrice: number;
   phoneNumber: string;
   location: string;
-  orderItems: IOrderItemDTO[];
+  orderItems: IOrderItemsDTO[];
 }

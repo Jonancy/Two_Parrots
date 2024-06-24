@@ -8,5 +8,5 @@ const indexRoutes = Router();
 
 indexRoutes.use("/user", userRoutes);
 indexRoutes.use("/auth", authRoutes);
-indexRoutes.use("/admin", AdminAuthRole(), adminRoutes);
+indexRoutes.use("/admin", adminRoutes);
 export default indexRoutes;
