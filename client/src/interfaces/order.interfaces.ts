@@ -1,3 +1,5 @@
+import { IEsewaDecodeResponse } from "./esewa.interfaces";
+
 export interface IOrderItemsDTO {
   productId: string;
   variantId: string;
@@ -13,4 +15,12 @@ export interface IOrderDTO {
   phoneNumber: string;
   location: string;
   orderItems: IOrderItemsDTO[];
+}
+
+export interface IFinalPayment {
+  pidx: string;
+  orderId: string;
+  status: string;
+  encodedData: IEsewaDecodeResponse;
+  method: "Esewa" | "Khalti";
 }

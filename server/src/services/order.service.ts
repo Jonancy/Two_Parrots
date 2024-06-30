@@ -1,3 +1,4 @@
+import { Orders, OrderStatus, PaymentMethod } from "@prisma/client";
 import { prisma } from "../..";
 import { IOrderDTO } from "../interfaces/order.interfaces";
 import { userSelectFields } from "../utils/prismaSelectQueries";
@@ -49,6 +50,29 @@ class OrderService {
       },
     });
     return orders;
+  };
+
+  //!For checking the order for now
+  getSpecificOrder = async (id: string): Promise<Orders> => {
+    const order = await prisma.orders.findFirst({
+      where: { orderId: id, status: "Pending" },
+    });
+
+    return order;
+  };
+
+  updateOrderStatus = async (
+    status: OrderStatus,
+    orderId: string,
+    pidx: string,
+    paymentMethod: PaymentMethod
+  ): Promise<boolean> => {
+    const update = await prisma.orders.update({
+      where: { orderId },
+      data: { status, pidx, paymentMethod },
+    });
+
+    return !!update;
   };
 }
 

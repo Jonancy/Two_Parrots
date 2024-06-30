@@ -8,6 +8,7 @@ import { validateSchema } from "../../validations/validator";
 import { checkUserExistence } from "../../middlewares/user/user.middleware";
 import { userOrderRoutes } from "./order.routes";
 import { userProductRoutes } from "./product.routes";
+import { checkRecordExistsMiddleware } from "../../middlewares/checkRecordExistsMiddleware";
 
 export const userRoutes = Router();
 userRoutes.use("/orders", userOrderRoutes);
@@ -27,5 +28,15 @@ userRoutes.post(
     let images = req.images;
     console.log(images);
     res.status(201).json({ images: req.images });
+  }
+);
+
+userRoutes.post(
+  "/:userId",
+  checkRecordExistsMiddleware("users", "userId"),
+  (req: Request, res: Response) => {
+    res.status(201).json({ user: req["users"] });
+
+    console.log("pass");
   }
 );

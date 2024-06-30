@@ -3,6 +3,7 @@ import CreateProductVariantForm from "../admin/addVariant";
 import ProductTable from "../admin/productLists";
 import SpecificProduct from "../client/specifcProduct";
 import OrderPage from "../client/orderPage";
+import axios from "axios";
 
 function Home() {
   const products = {

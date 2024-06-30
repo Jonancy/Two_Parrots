@@ -91,16 +91,18 @@ model ProductImages {
 }
 
 model Orders {
-  orderId     String       @id @default(cuid())
-  userName    String
-  email       String
-  phoneNumber String
-  location    String
-  orderItems  OrderItems[]
-  totalPrice  Float
-  status      OrderStatus  @default(Pending)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt()
+  orderId       String         @id @default(cuid())
+  userName      String
+  email         String
+  phoneNumber   String
+  location      String
+  pidx          String?
+  paymentMethod PaymentMethod?
+  orderItems    OrderItems[]
+  totalPrice    Float
+  status        OrderStatus    @default(Pending)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt()
 }
 
 enum OrderStatus {
@@ -109,6 +111,11 @@ enum OrderStatus {
   Shipped
   Delivered
   Cancelled
+}
+
+enum PaymentMethod {
+  Khalti
+  Esewa
 }
 
 model OrderItems {

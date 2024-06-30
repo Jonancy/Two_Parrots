@@ -1,13 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
 import jwt from "jsonwebtoken";
 import {
   JwtAccessPayloadExtended,
   JwtRefreshPayloadExtended,
 } from "../interfaces/jwt.interfaces";
-
-const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY;
-const JWT_ACCESS_SECRET_KEY = process.env.JWT_ACCESS_SECRET_KEY;
+import { JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY } from "../../secrets";
 
 //!For Refresh token
 // Function to create a JWT
