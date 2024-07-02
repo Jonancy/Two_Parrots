@@ -24,6 +24,8 @@ class UserService {
 
   //For registration of the user
   registerUser = async (userDTO: UserRegisterDTO): Promise<boolean> => {
+    console.log(userDTO);
+
     const user = await prisma.users.create({
       data: userDTO,
     });

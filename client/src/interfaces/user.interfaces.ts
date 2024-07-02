@@ -1,6 +1,13 @@
 export interface IUserState {
-  id: string;
+  userId: string;
   picture: string;
   name: string;
   email: string;
+}
+
+export interface IUserRegisterDTO {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
 }
