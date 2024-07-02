@@ -106,6 +106,10 @@ function Home() {
     ],
   };
 
+  const authGoogle = async () => {
+    window.open("http://localhost:8000/api/v1/auth/google/register", "_self");
+  };
+
   return (
     <div>
       {/* Home sdsd
@@ -114,6 +118,7 @@ function Home() {
       {/* <ProductTable products={products} /> */}
       {/* <SpecificProduct product={products} /> */}
       <OrderPage />
+      <button onClick={authGoogle}>Google</button>
     </div>
   );
 }

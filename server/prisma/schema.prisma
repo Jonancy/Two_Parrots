@@ -22,9 +22,9 @@ model Users {
   userId      String   @id @default(cuid())
   name        String
   email       String   @unique
-  phoneNumber String
+  phoneNumber String?
   picture     String?  @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
-  password    String
+  password    String?
   location    String?
   role        Role     @default(User)
   updatedAt   DateTime @updatedAt()
