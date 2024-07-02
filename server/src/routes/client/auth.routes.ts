@@ -10,9 +10,11 @@ import {
   checkUserExistence,
   checkUserLogin,
 } from "../../middlewares/user/user.middleware";
+import { googleAuthRoutes } from "./googleAuth.routes";
 
 export const authRoutes = Router();
 
+authRoutes.use("/google", googleAuthRoutes);
 authRoutes.post(
   "/registerUser",
   // uploadFile.single("image"),
