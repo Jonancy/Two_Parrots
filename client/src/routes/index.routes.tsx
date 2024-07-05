@@ -1,38 +1,21 @@
-import { Fragment, ReactComponentElement, Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import { AdminChecker, AuthChecker, AuthorChecker } from "./AuthChecker.routes";
 import { allRoutes } from "./all.routes";
 import Loading from "@/pages/Loading";
+import { IMainRoutes } from "@/interfaces/routes.interfaces";
+import HomeLayout from "@/layout/client/homeLayout";
+import AdminDashboardLayout from "@/layout/admin/adminDashboardLayout";
 
-function MainWrapper({
-  route,
-  children,
-}: {
-  route: {
-    id: string;
-    path: string;
-    component: React.FC;
-    hasHomeLayout: boolean;
-    hasAdminLayout: boolean;
-    requiredAuth: boolean;
-    requireAuthor: boolean;
-    layout: ReactComponentElement;
-  };
-  children: React.ReactNode;
-}) {
-  const LayoutWrpper = route?.layout ?? Fragment;
-  const PrivateWrapper = route?.requiredAuth ? Fragment : Fragment;
-  const AdminWrapper = route?.hasAdminLayout ? Fragment : Fragment;
-  const AuthorWrapper = route?.requireAuthor ? Fragment : Fragment;
+function MainWrapper({ route, children }: IMainRoutes) {
+  const HomeLayoutWrapper = route?.hasHomeLayout ? HomeLayout : Fragment;
+  const AdminLayoutWrapper = route?.hasAdminLayout
+    ? AdminDashboardLayout
+    : Fragment;
 
   return (
-    <PrivateWrapper>
-      <AdminWrapper>
-        <AuthorWrapper>
-          <LayoutWrpper>{children}</LayoutWrpper>
-        </AuthorWrapper>
-      </AdminWrapper>
-    </PrivateWrapper>
+    <AdminLayoutWrapper>
+      <HomeLayoutWrapper>{children}</HomeLayoutWrapper>
+    </AdminLayoutWrapper>
   );
 }
 
@@ -48,7 +31,7 @@ export default function Router() {
                 path={route.path}
                 element={
                   <MainWrapper route={route}>
-                    <route.component />
+                    <route.element />
                   </MainWrapper>
                 }
               />

@@ -1,5 +1,7 @@
 // // import { url } from "../index.service";
 
+import { url } from "../index.api";
+
 // import { IOrderDTO } from "@/interfaces/order.interfaces";
 // import { url } from "../index.service";
 
@@ -20,3 +22,7 @@
 // export const orderProduct = (data: IOrderDTO) => {
 //   return url.post(`/user/orders/createOrder`, data);
 // };
+
+export const specificUser = (id: string) => {
+  return url.get(`/user/getSpecificUser/${id}`);
+};

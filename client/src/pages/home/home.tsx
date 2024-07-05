@@ -8,11 +8,15 @@ import { useState } from "react";
 import { IUserRegisterDTO, IUserState } from "@/interfaces/user.interfaces";
 import { useGetUsersQuery } from "@/queries/user/user.query";
 import { useRegisterUser } from "@/queries/auth/userRegister.query";
+import Page2 from "./page2";
+import Page1 from "./page1";
 
 function Home() {
   const authGoogle = async () => {
     window.open("http://localhost:8000/api/v1/auth/google/register", "_self");
   };
+
+  const [currentPage, setCurrentPage] = useState(<Page1 />);
 
   const [newUser, setNewUser] = useState<IUserRegisterDTO>({
     password: "",
@@ -74,10 +78,14 @@ function Home() {
   }
 
   if (createUser.error) {
-    console.log(createUser.error);
+    console.log(createUser.error.response.data.message);
   }
+
   return (
     <div>
+      <button onClick={() => setCurrentPage(<Page1 />)}> Page1 </button>
+      <button onClick={() => setCurrentPage(<Page2 />)}> Page2 </button>
+      {currentPage}
       {/* Home sdsd
       <p>,P adsdas dasdas sdsass dasdas</p> */}
       {/* <CreateProductVariantForm /> */}
@@ -87,7 +95,7 @@ function Home() {
       {/* <button onClick={authGoogle}>Google</button> */}
       {/* <p>{JSON.stringify(postQuery.data)}</p>
       <button onClick={() => newPostMutation.mutate("New")}>Add post</button> */}
-      <div>
+      {/* <div>
         {users.data ? (
           users.data.map((user) => (
             <p key={user.userId}>
@@ -97,7 +105,7 @@ function Home() {
         ) : (
           <p>No users available</p>
         )}
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit}>
         <input

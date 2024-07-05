@@ -1,5 +1,5 @@
+import { addProduct } from "@/api/admin/product.api";
 import { IProduct } from "@/interfaces/product.interfaces";
-import { addProduct } from "@/services/admin/product.service";
 import { ChangeEvent, useState } from "react";
 
 export default function AddProducts() {
