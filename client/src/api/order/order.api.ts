@@ -1,5 +1,5 @@
 import { IFinalPayment, IOrderDTO } from "@/interfaces/order.interfaces";
-import { url } from "../index.service";
+import { url } from "../index.api";
 
 export const orderProduct = (data: IOrderDTO) => {
   return url.post(`/user/orders/createOrder`, data);

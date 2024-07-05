@@ -1,6 +1,6 @@
+import { paymentProduct } from "@/api/order/order.api";
 import { IEsewaDecodeResponse } from "@/interfaces/esewa.interfaces";
 import { IFinalPayment } from "@/interfaces/order.interfaces";
-import { paymentProduct } from "@/services/order/order.service";
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { useFormik } from "formik";
-import { addProductVariant } from "@/services/admin/product.service";
+import { addProductVariant } from "@/api/admin/product.service";
 
 const sizeOptions = ["S", "M", "L", "XL", "XXL"];
 const colorOptions = ["red", "blue", "green", "yellow", "purple"];

@@ -4,8 +4,9 @@
 // } from "../../interfaces/types/auth/logiRegi.interfaces";
 // import { url } from "../index.service";
 
-import { IUserRegisterDTO } from "@/interfaces/user.interfaces";
-import { url } from "../index.service";
+import { IUserRegisterDTO, IUserState } from "@/interfaces/user.interfaces";
+import { url } from "../index.api";
+import { IApiResponse } from "@/interfaces/apiResponse.interface";
 
 export const RegisterUser = (form: IUserRegisterDTO) => {
   return url.post("/auth/registerUser", form);
@@ -23,6 +24,7 @@ export const RegisterUser = (form: IUserRegisterDTO) => {
 //   return url.get("/auth/refresh");
 // };
 
-export const getUsers = () => {
-  return url.get("/user/getUsers");
+export const getUsers = async (): Promise<IApiResponse<IUserState[]>> => {
+  const res = await url.get("/user/getUsers");
+  return res.data;
 };

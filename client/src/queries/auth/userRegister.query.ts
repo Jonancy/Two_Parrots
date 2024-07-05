@@ -1,7 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_USERS_KEY } from "@/constants/query.constant";
 import { IUserRegisterDTO } from "@/interfaces/user.interfaces";
-import { RegisterUser } from "@/services/auth/auth.service";
+import { RegisterUser } from "@/api/auth/auth.api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useRegisterUser = () => {

@@ -1,6 +1,9 @@
-import { QUERY_USERS_KEY } from "@/constants/query.constant";
+import {
+  QUERY_SPECIFIC_USER_KEY,
+  QUERY_USERS_KEY,
+} from "@/constants/query.constant";
 import { IUserState } from "@/interfaces/user.interfaces";
-import { getUsers } from "@/services/auth/auth.service";
+import { getUsers } from "@/api/auth/auth.api";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export const useGetUsersQuery = (): UseQueryResult<IUserState[] | []> => {
@@ -9,7 +12,16 @@ export const useGetUsersQuery = (): UseQueryResult<IUserState[] | []> => {
     queryFn: async () => {
       const user = await getUsers();
       console.log(user);
-      return user.data.data;
+      return user.data;
     },
   });
 };
+
+// export const useGetSpecificUserQuery = ()=>{
+//   return useQuery({
+//     queryKey:[QUERY_SPECIFIC_USER_KEY],
+//     queryFn:async()=>{
+//       const user = await
+//     }
+//   })
+// }

@@ -1,44 +1,27 @@
-import HomeLayout from "@/layout/client/Home.Layout";
-import PaymentSuccess from "@/pages/client/paymentSuccess";
-import Profile from "@/pages/client/profile";
-import Home from "@/pages/home/index.home";
-import Test from "@/pages/test";
+import { lazy } from "react";
+import { IRouteTypes } from "@/interfaces/routes.interfaces";
+const PaymentSuccess = lazy(() => import("@/pages/client/paymentSuccess"));
+const Profile = lazy(() => import("@/pages/client/profile"));
+const Home = lazy(() => import("@/pages/home/home"));
 
-export const userRoutes = [
+export const userRoutes: IRouteTypes[] = [
   {
     id: "home",
     path: "/",
-    component: Home,
+    element: Home,
     hasHomeLayout: true,
-    hasAdminLayout: false,
-    layout: HomeLayout,
-    requiredAuth: false,
   },
-  {
-    id: "home",
-    path: "/test",
-    component: Test,
-    hasHomeLayout: true,
-    hasAdminLayout: false,
-    layout: HomeLayout,
-    requiredAuth: false,
-  },
+
   {
     id: "payment",
     path: "/paymentSuccess",
-    component: PaymentSuccess,
+    element: PaymentSuccess,
     hasHomeLayout: true,
-    hasAdminLayout: false,
-    layout: HomeLayout,
-    requiredAuth: false,
   },
   {
     id: "profile",
     path: "/profile/:userId",
-    component: Profile,
+    element: Profile,
     hasHomeLayout: true,
-    hasAdminLayout: false,
-    layout: HomeLayout,
-    requiredAuth: false,
   },
 ];
