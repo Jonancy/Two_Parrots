@@ -3,11 +3,9 @@ export interface IUserState {
   picture: string;
   name: string;
   email: string;
+  number: string;
 }
 
-export interface IUserRegisterDTO {
-  name: string;
-  email: string;
-  password: string;
-  phoneNumber: string;
+export interface IUserWithAccessToken extends IUserState {
+  token: string;
 }

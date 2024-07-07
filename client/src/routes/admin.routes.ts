@@ -9,11 +9,13 @@ export const adminRoutes: IRouteTypes[] = [
     path: "/dashboard/admin",
     element: Dashboard,
     hasAdminLayout: true,
+    hasAuth: true,
   },
   {
     id: "addProducts",
     path: "/dashboard/products",
     element: AddProducts,
     hasAdminLayout: true,
+    hasAuth: true,
   },
 ];

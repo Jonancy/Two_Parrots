@@ -56,7 +56,12 @@ class AuthController {
       );
 
       if (!passCheck) {
-        throw new CustomError("Password did'not matched", 400);
+        return res.status(400).json({
+          success: false,
+          message: "Validation errors",
+          errors: [{ field: "password", message: "Password did'not matched" }],
+          // throw new CustomError("Password did'not matched", 400);
+        });
       }
 
       const jwtRefreshPayload: JwtRefreshPayloadExtended = {
@@ -83,7 +88,7 @@ class AuthController {
 
       res.cookie("token", jwt, {
         httpOnly: true, // Must be false to access in JS
-        secure: true, // For local development. Set to true in production with HTTPS
+        secure: false, // For local development. Set to true in production with HTTPS
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000, //For a day 24 hrs
       });
@@ -105,14 +110,16 @@ class AuthController {
       if (!refreshToken) {
         throw new CustomError("No refresh token received", 401);
       }
+      console.log(req.cookies);
 
       const verifiedToken = jwtRefreshVerification(refreshToken);
+      console.log(verifiedToken);
 
       if (!verifiedToken) {
         throw new CustomError("Unauthorized", 500);
       }
 
-      const user = await userService.getUserByEmail(verifiedToken.email);
+      const user = await userService.getUserById(verifiedToken.userId);
 
       if (!user) {
         throw new CustomError("User not found", 404);
@@ -125,7 +132,12 @@ class AuthController {
 
       const accessToken = jwtAccessCreation(jwtPayload);
 
-      return successHandler(res, 201, accessToken, "Access token received");
+      return successHandler(
+        res,
+        201,
+        { token: accessToken },
+        "Access token received"
+      );
     } catch (e) {
       next(e);
     }

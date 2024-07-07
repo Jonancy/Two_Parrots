@@ -1,6 +1,6 @@
 // // import { url } from "../index.service";
 
-import { url } from "../index.api";
+import { axiosInstance } from "../index.api";
 
 // import { IOrderDTO } from "@/interfaces/order.interfaces";
 // import { url } from "../index.service";
@@ -24,5 +24,5 @@ import { url } from "../index.api";
 // };
 
 export const specificUser = (id: string) => {
-  return url.get(`/user/getSpecificUser/${id}`);
+  return axiosInstance.get(`/user/getSpecificUser/${id}`);
 };

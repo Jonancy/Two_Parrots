@@ -6,6 +6,7 @@ export interface IRouteTypes {
   element: React.ComponentType;
   hasHomeLayout?: boolean;
   hasAdminLayout?: boolean;
+  hasAuth?: boolean;
   layout?: LazyExoticComponent<any>;
 }
 export interface IMainRoutes {

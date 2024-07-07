@@ -5,17 +5,21 @@ import Loading from "@/pages/Loading";
 import { IMainRoutes } from "@/interfaces/routes.interfaces";
 import HomeLayout from "@/layout/client/homeLayout";
 import AdminDashboardLayout from "@/layout/admin/adminDashboardLayout";
+import AdminAuthChecker from "./wrappers/adminAuthChecker";
 
 function MainWrapper({ route, children }: IMainRoutes) {
   const HomeLayoutWrapper = route?.hasHomeLayout ? HomeLayout : Fragment;
   const AdminLayoutWrapper = route?.hasAdminLayout
     ? AdminDashboardLayout
     : Fragment;
+  const AdminLayoutChecker = route?.hasAuth ? AdminAuthChecker : Fragment;
 
   return (
-    <AdminLayoutWrapper>
-      <HomeLayoutWrapper>{children}</HomeLayoutWrapper>
-    </AdminLayoutWrapper>
+    <AdminLayoutChecker>
+      <AdminLayoutWrapper>
+        <HomeLayoutWrapper>{children}</HomeLayoutWrapper>
+      </AdminLayoutWrapper>
+    </AdminLayoutChecker>
   );
 }
 

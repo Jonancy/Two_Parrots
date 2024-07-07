@@ -1,13 +1,15 @@
-import { url } from "../index.api";
+import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
+import { axiosInstance } from "../index.api";
+import { IProduct } from "@/interfaces/product.interfaces";
 
 export const addProduct = (form: FormData) => {
-  return url.post("/admin/product/addProducts", form);
+  return axiosInstance.post("/admin/product/addProducts", form);
 };
 
 export const addProductVariant = (form: FormData, id: string) => {
-  return url.post(`/admin/product/${id}/createVariant`, form);
+  return axiosInstance.post(`/admin/product/${id}/createVariant`, form);
 };
 
 export const getAllProducts = () => {
-  return url.get("/admin/products/getProducts");
+  return axiosInstance.get("/admin/products/getProducts");
 };

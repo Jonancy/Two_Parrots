@@ -9,7 +9,11 @@ import { Toaster } from "@/components/ui/toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnReconnect: true, refetchOnWindowFocus: false },
+    queries: {
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
   },
 });
 

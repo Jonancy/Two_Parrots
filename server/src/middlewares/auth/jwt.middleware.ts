@@ -14,10 +14,7 @@ export const verifyAccessJwtTokenMiddleware = async (
     const bearerToken = req.headers.authorization;
 
     if (!bearerToken) {
-      throw new CustomError(
-        "No token provided. Please include a valid JWT token in the Authorization header.",
-        400
-      );
+      throw new CustomError("Token expired", 401);
     }
 
     const [bearer, token] = bearerToken.split(" ");
