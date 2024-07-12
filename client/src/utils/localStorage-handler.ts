@@ -22,5 +22,5 @@ export const getLocalStorage = (): IUserState | null => {
 };
 
 export const clearLocalStorage = () => {
-  localStorage.clear();
+  localStorage.removeItem("data");
 };

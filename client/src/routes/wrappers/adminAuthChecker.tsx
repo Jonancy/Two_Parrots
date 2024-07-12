@@ -5,6 +5,8 @@ export default function AdminAuthChecker({
 }: {
   children: React.ReactNode;
 }) {
+  //!Wont be using this its for validating on the frontend only using interceptors as a middleware
+  //! the authorzation will be done
   // const
   const checkRole = useAdminDashboardCheck();
 

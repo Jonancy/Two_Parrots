@@ -1,58 +1,104 @@
-import { loadCartItemsFromCookies } from "@/utils/cookies-handler";
-import CreateProductVariantForm from "../admin/addVariant";
-import ProductTable from "../admin/productLists";
-import SpecificProduct from "../client/specifcProduct";
-import OrderPage from "../client/orderPage";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { IUserState } from "@/interfaces/user.interfaces";
-import { useGetUsersQuery } from "@/queries/user/user.query";
-import Page2 from "./page2";
-import Page1 from "./page1";
-import { IUserRegisterDTO } from "@/interfaces/auth.interfaces";
-import { useRegisterUserQuery } from "@/queries/auth/userRegister.query";
-import { getAccessToken } from "@/helpers/token-helper";
+import { useEffect, useRef, useState } from "react";
+
 import ProductCard from "@/components/cards/productCard";
-import { useGetAllProductsQuery } from "@/queries/product/product.query";
+import { useGetAllClientProductsQuery } from "@/queries/product/product.query";
+import bill from "@/assets/bil.jpg";
 
 function Home() {
-  const authGoogle = async () => {
-    window.open("http://localhost:8000/api/v1/auth/google/register", "_self");
-  };
+  const exampleRef = useRef<HTMLDivElement | null>(null);
+  const [isEntered, setIsEntered] = useState<boolean>(false);
+  const [hasFetched, setHasFetched] = useState<boolean>(false);
 
-  // const postQuery = useQuery({
-  //   queryKey: ["posts"],
-  //   queryFn: () => {
-  //     return new Promise((resolve) => {
-  //       setTimeout(() => {
-  //         resolve(data);
-  //       }, 1000);
-  //     });
-  //   },
-  // });
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      console.log("entry", entry);
+      console.log(entry.isIntersecting);
 
-  // const newPostMutation = useMutation({
-  //   mutationFn: async (name: string) => {
-  //     const newData = [...data, { name }];
-  //     setData(newData);
-  //     return newData;
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["posts"] });
-  //     console.log("pass");
-  //   },
-  // });
+      if (entry.isIntersecting && !hasFetched) {
+        console.log("Fetching data...");
+        setIsEntered(true);
+        setHasFetched(true);
+      }
+    });
 
-  const products = useGetAllProductsQuery();
-  console.log(products.data);
+    observer.observe(exampleRef?.current);
+    if (exampleRef.current) {
+      observer.observe(exampleRef.current);
+    }
+
+    return () => {
+      if (exampleRef.current) {
+        observer.unobserve(exampleRef.current);
+      }
+    };
+  }, [hasFetched]);
+
+  // const authGoogle = async () => {
+  //   window.open("http://localhost:8000/api/v1/auth/google/register", "_self");
+  // };
+
+  console.log("isEntered", isEntered);
+
+  const products = useGetAllClientProductsQuery(isEntered);
+  console.log(products.error?.response);
+  // const secondProducts = useGetAllClientProductsQuery(isEntered);
+
+  // const customError = products?.error?.response;
 
   return (
-    <div>
-      <div className="grid grid-cols-5 mx-20 gap-6">
-        {products?.data?.data?.map((product) => (
-          <ProductCard {...product} />
-        ))}
-      </div>
+    <div className="" ref={exampleRef}>
+      {products?.isLoading ? (
+        <div className="grid grid-cols-5 mx-20 gap-6">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
+            <div
+              className="flex flex-col shadow-md  cursor-pointer rounded-md"
+              key={index}
+            >
+              <div className=" overflow-hidden rounded-t-md">
+                <img
+                  className="rounded-t-md  h-[23rem] w-full object-cover hover:scale-110 duration-500 "
+                  src={bill}
+                  loading="lazy"
+                ></img>
+              </div>
+              <div className="px-2 py-4">
+                <p className="font-semibold ">aha </p>
+                <p className="text-gray-400 text-sm">as</p>
+                <p className="font-semibold text-sm">NPR 22323</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-5 mx-20 gap-6">
+          {products?.data?.data?.map((product) => (
+            <ProductCard {...product} />
+          ))}
+        </div>
+      )}
+      <h1 className="text-7xl m-10">Gap</h1>
+      {/* <div ref={exampleRef}>
+        {secondProducts?.isLoading ? (
+          <p>Loading data</p>
+        ) : (
+          <div className="grid grid-cols-5 mx-20 gap-6">
+            {secondProducts?.data?.data?.map((product) => (
+              <ProductCard {...product} />
+            ))}
+          </div>
+        )}
+      </div> */}
+
+      <img
+        src="https://res.cloudinary.com/dr1giexhn/image/upload/v1719218221/twoParrot/yxfjlqnsm9v8pxkkxbyc.jpg"
+        loading="lazy"
+        alt="hehe"
+      ></img>
+      {/* 
+      <h1 ref={exampleRef} className="text-7xl m-10">
+        Ehehe
+      </h1> */}
     </div>
   );
 }

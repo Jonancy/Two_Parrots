@@ -1,4 +1,4 @@
-function Loading() {
+function Loader() {
   return (
     <div className="fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-background">
       <div className="flex flex-col items-center">
@@ -10,4 +10,4 @@ function Loading() {
     </div>
   );
 }
-export default Loading;
+export default Loader;

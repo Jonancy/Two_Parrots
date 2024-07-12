@@ -1,8 +1,8 @@
-import { adminRoutes } from "./admin.routes";
-import { authRoutes } from "./auth.routes";
-import { errorRoutes } from "./error.routes";
+import { adminRoutes } from "./admin/admin.routes";
+import { authRoutes } from "./auth/auth.routes";
+import { errorRoutes } from "./error/error.routes";
 
-import { userRoutes } from "./user.routes";
+import { userRoutes } from "./client/user.routes";
 
 export const allRoutes = [
   ...userRoutes,

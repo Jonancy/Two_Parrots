@@ -7,17 +7,19 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "dev": "nodemon index.ts",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "knip": "knip"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.10",
+    "knip": "^5.25.2",
     "prisma": "^5.15.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",

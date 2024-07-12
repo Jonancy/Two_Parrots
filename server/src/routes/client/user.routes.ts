@@ -11,8 +11,8 @@ import { userProductRoutes } from "./product.routes";
 import { checkRecordExistsMiddleware } from "../../middlewares/checkRecordExistsMiddleware";
 
 export const userRoutes = Router();
-userRoutes.use("/orders", userOrderRoutes);
-userRoutes.use("/products", userProductRoutes);
+userRoutes.use("/order", userOrderRoutes);
+userRoutes.use("/product", userProductRoutes);
 
 userRoutes.get("/getUsers", userController.getUserDetails);
 

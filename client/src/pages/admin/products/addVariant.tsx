@@ -1,12 +1,17 @@
 import React from "react";
 import { useFormik } from "formik";
-import { addProductVariant } from "@/api/admin/product.service";
+import { useParams } from "react-router-dom";
+import { useCreateProductVariant } from "@/queries/product/variant/varinat.query";
+import { addProductVariant } from "@/api/admin/product.api";
 
 const sizeOptions = ["S", "M", "L", "XL", "XXL"];
 const colorOptions = ["red", "blue", "green", "yellow", "purple"];
 
-const CreateProductVariantForm: React.FC = () => {
-  const id: string = "clxok5pof0003vyecjxg4s025";
+const AddProuctVariant = () => {
+  const { productId } = useParams();
+
+  const { data, error, mutate } = useCreateProductVariant();
+
   const formik = useFormik({
     initialValues: {
       color: "",
@@ -21,10 +26,14 @@ const CreateProductVariantForm: React.FC = () => {
         formData.append(`image`, image);
       });
 
-      const res = await addProductVariant(formData, id);
+      const res = await addProductVariant(formData, productId);
       console.log(res.data);
+
+      // mutate(formData, productId);
     },
   });
+
+  console.log(formik.values);
 
   const handleSizeChange = (
     index: number,
@@ -163,4 +172,4 @@ const CreateProductVariantForm: React.FC = () => {
   );
 };
 
-export default CreateProductVariantForm;
+export default AddProuctVariant;

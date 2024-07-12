@@ -27,6 +27,5 @@ export const LoginUser = (form: ILoginDTO) => {
 // };
 
 export const getUsers = async (): Promise<IApiResponse<IUserState[]>> => {
-  const res = await axiosInstance.get("/user/getUsers");
-  return res.data;
+  return (await axiosInstance.get("/user/getUsers")).data;
 };

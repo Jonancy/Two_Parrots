@@ -5,8 +5,9 @@ const ProductCard = ({ gender, name, price, variants }: IProduct) => {
     <div className="flex flex-col shadow-md  cursor-pointer rounded-md">
       <div className=" overflow-hidden rounded-t-md">
         <img
-          className="rounded-t-md h-[23rem] w-full object-cover hover:scale-110 duration-500 "
-          src={variants[0].images[0].url}
+          className="rounded-t-md h-[30rem] w-full object-cover hover:scale-110 duration-500 "
+          src={variants[0]?.images[0]?.url}
+          loading="lazy"
         ></img>
       </div>
       <div className="px-2 py-4">
