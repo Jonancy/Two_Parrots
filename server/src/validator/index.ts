@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
 import yup, { ValidationError } from "yup";
 
-//!Dynamic validator The generic type T means we can use what ever schema we want it can be of any type or any object
+//!Dynamic validator The generic type T means we can use what ever schema  we want it can be of any type or any object
+//!Passing type as an argument
 export const validateSchema =
   <T>(schema: yup.ObjectSchema<T>) =>
   async (req: Request<{}, {}, T>, res: Response, next: NextFunction) => {

@@ -1,5 +1,8 @@
 import { addProduct, getAllProducts } from "@/api/admin/product.api";
-import { getAllProductClient } from "@/api/client/product.api";
+import {
+  getAllProductClient,
+  getSpecificProductClient,
+} from "@/api/client/product.api";
 import { QUERY_PRODUCTS_KEY } from "@/constants/query.constant";
 import CustomError from "@/handlers/errors/customError";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
@@ -32,12 +35,22 @@ export const useGetAllClientProductsQuery = (
 export const useAddProductQuery = () => {
   return useMutation({
     mutationFn: addProduct,
-    onSettled: (_, error) => {
+    onSettled: (success, error) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("success");
+        console.log("success", success);
       }
     },
+  });
+};
+
+export const useGetSpecificProductQuery = (
+  productId: string | undefined
+): UseQueryResult<IApiResponse<IProduct>, CustomError> => {
+  return useQuery({
+    queryKey: ["productsClient", productId],
+    queryFn: () => getSpecificProductClient(productId),
+    retry: 0,
   });
 };

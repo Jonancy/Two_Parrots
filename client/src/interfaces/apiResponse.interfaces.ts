@@ -1,5 +1,5 @@
 export interface IApiResponse<T> {
   success: boolean;
-  messsage: string;
+  message: string;
   data: T;
 }

@@ -40,17 +40,22 @@ const cartSlice = createSlice({
       );
 
       if (existingItem) {
+        console.log("exists");
+        console.log(existingItem.quantity);
+        console.log(newItem.quantity);
+
         existingItem.quantity += newItem.quantity;
+        const price = newItem.quantity * newItem.price;
+        existingItem.price += price;
       } else {
         state.items.push(newItem);
       }
 
-      // Save updated cart items to sessionStorage
       saveCartItemsToCookies(state.items);
 
-      // Update totalPrice
       state.totalPrice = calculateTotalPrice(state.items);
     },
+
     updateItem(state, action: PayloadAction<ICartItem>) {
       const updatedItem = action.payload;
       const index = state.items.findIndex(

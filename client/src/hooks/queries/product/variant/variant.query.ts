@@ -3,7 +3,15 @@ import { useMutation } from "@tanstack/react-query";
 
 export const useCreateProductVariant = () => {
   return useMutation({
-    mutationFn: (formData, productId) => addProductVariant(formData, productId),
+    mutationFn: ({
+      formData,
+      productId,
+    }: {
+      formData: FormData;
+      productId: string;
+    }) => {
+      return addProductVariant(formData, productId);
+    },
 
     onSettled: (success, error) => {
       if (error) {

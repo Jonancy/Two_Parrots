@@ -127,7 +127,7 @@ const SpecificProduct: React.FC<SpecificProductProps> = ({ product }) => {
               onChange={handleQuantity}
               type="number"
               min="1"
-              max={selectedSize?.stock || 1}
+              max={selectedSize?.stock ?? 1}
               disabled={!selectedSize}
             />
           </div>

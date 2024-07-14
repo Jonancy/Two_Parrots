@@ -1,21 +1,23 @@
 import TextInput from "@/components/inputs/textInput";
+import { toast } from "@/components/ui/use-toast";
 import { IProductDTO } from "@/dtos/product.dto";
 import { useGetCategory } from "@/queries/category/category.query";
 import { useAddProductQuery } from "@/queries/product/product.query";
 import { useFormik } from "formik";
-import { useState } from "react";
+import { useEffect } from "react";
 
 export default function AddProducts() {
-  const { error, isSuccess, mutate, isPending } = useAddProductQuery();
-  const { data } = useGetCategory();
+  const { error, isSuccess, mutate, isPending, data } = useAddProductQuery();
+  const category = useGetCategory();
 
   const initialValues: IProductDTO = {
     name: "",
-    gender: "",
-    categoryId: "",
+    gender: "Men",
+    categoryId: category?.data?.data[0]?.categoryId ?? "",
     price: "",
     description: "",
   };
+  console.log(category?.data?.data[0]?.categoryId);
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -24,9 +26,29 @@ export default function AddProducts() {
     },
   });
 
-  if (isSuccess) {
-    alert("New product added");
-  }
+  // if (isSuccess) {
+  //   alert("New product added");
+  // }
+
+  // console.log(formik.values);
+
+  // if (!error) {.
+  //   alert("new product added");
+  // }
+
+  useEffect(() => {
+    if (isSuccess) {
+      formik.resetForm();
+      toast({ title: data?.message });
+      console.log("success");
+    }
+  }, [isSuccess, data]);
+
+  useEffect(() => {
+    if (error) {
+      toast({ title: error?.message });
+    }
+  }, [error]);
 
   console.log(formik.values);
 
@@ -70,17 +92,18 @@ export default function AddProducts() {
         <br />
         <label>
           Category:
-          <select
-            name="categoryId"
-            value={formik.values.categoryId}
-            onChange={formik.handleChange}
-          >
-            {data?.data?.map((category) => (
-              <option key={category.categoryId} value={category.categoryId}>
-                {category.categoryName}
-              </option>
-            ))}
-          </select>
+          {category?.data?.data?.map((category) => (
+            <div className="flex gap-2 items-center" key={category.categoryId}>
+              <label>{category.categoryName}</label>
+              <input
+                name="categoryId"
+                value={category.categoryId}
+                onChange={formik.handleChange}
+                checked={formik.values.categoryId === category.categoryId}
+                type="radio"
+              ></input>
+            </div>
+          ))}
         </label>
 
         <button

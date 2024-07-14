@@ -6,6 +6,7 @@ const AddProuctVariant = lazy(
 const ProductLists = lazy(() => import("@/pages/admin/products/productLists"));
 const AddProducts = lazy(() => import("@/pages/admin/products/addProducts"));
 const Dashboard = lazy(() => import("@/pages/admin/dashboard/index.dashboard"));
+
 export const adminRoutes: IRouteTypes[] = [
   {
     id: "dashboard",

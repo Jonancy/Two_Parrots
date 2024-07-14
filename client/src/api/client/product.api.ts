@@ -8,3 +8,9 @@ export const getAllProductClient = async (): Promise<
   return (await axiosInstance.get("/user/product/getProducts")).data;
   // return handleError(e as AxiosError);
 };
+
+export const getSpecificProductClient = async (
+  productId: string | undefined
+): Promise<IApiResponse<IProduct>> => {
+  return (await axiosInstance.get(`/user/product/${productId}`)).data;
+};

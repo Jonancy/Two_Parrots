@@ -5,7 +5,7 @@ import { loginLimiter } from "../../middlewares/auth/loginLimiter.middleware";
 import { authController } from "../../controllers/auth.controller";
 import { handleSingleFileUpload } from "../../middlewares/upload/upload.middleware";
 import { uploadFile } from "../../utils/multer-manager";
-import { validateSchema } from "../../validations/validator";
+import { validateSchema } from "../../validator";
 import {
   checkUserExistence,
   checkUserLogin,

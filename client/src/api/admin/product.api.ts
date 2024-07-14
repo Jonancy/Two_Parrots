@@ -1,5 +1,5 @@
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
-import { axiosInstance, privateAxiosInstance } from "../index.api";
+import { privateAxiosInstance } from "../index.api";
 import { IProduct } from "@/interfaces/product.interfaces";
 import { IProductDTO } from "@/dtos/product.dto";
 

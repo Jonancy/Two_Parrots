@@ -1,4 +1,4 @@
-import { useAdminDashboardCheck } from "@/queries/auth/adminDashboard.query";
+import { useAdminDashboardCheck } from "@/hooks/queries/auth/adminDashboard.query";
 
 export default function AdminAuthChecker({
   children,

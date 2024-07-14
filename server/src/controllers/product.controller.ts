@@ -73,6 +73,25 @@ class ProductController {
       next(e);
     }
   };
+
+  getSpecificProduct = async (
+    req: Request<{ productId: string }>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const productId = req.params.productId;
+      const product = await productService.getSpecificProduct(productId);
+
+      if (!product) {
+        throw new CustomError("No product found", 404);
+      }
+
+      successHandler(res, 200, product, "Required product");
+    } catch (e) {
+      next(e);
+    }
+  };
 }
 
 export const productController = new ProductController();

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
 import ProductCard from "@/components/cards/productCard";
-import { useGetAllClientProductsQuery } from "@/queries/product/product.query";
 import bill from "@/assets/bil.jpg";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useGetAllClientProductsQuery } from "@/hooks/queries/product/product.query";
 
 function Home() {
   const exampleRef = useRef<HTMLDivElement | null>(null);
@@ -56,11 +57,11 @@ function Home() {
               key={index}
             >
               <div className=" overflow-hidden rounded-t-md">
-                <img
+                <LazyLoadImage
                   className="rounded-t-md  h-[23rem] w-full object-cover hover:scale-110 duration-500 "
                   src={bill}
                   loading="lazy"
-                ></img>
+                ></LazyLoadImage>
               </div>
               <div className="px-2 py-4">
                 <p className="font-semibold ">aha </p>
@@ -90,11 +91,11 @@ function Home() {
         )}
       </div> */}
 
-      <img
+      <LazyLoadImage
         src="https://res.cloudinary.com/dr1giexhn/image/upload/v1719218221/twoParrot/yxfjlqnsm9v8pxkkxbyc.jpg"
         loading="lazy"
         alt="hehe"
-      ></img>
+      ></LazyLoadImage>
       {/* 
       <h1 ref={exampleRef} className="text-7xl m-10">
         Ehehe

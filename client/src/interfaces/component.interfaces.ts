@@ -6,3 +6,11 @@ export interface IFormInputProps {
   placeholder: string;
   formik: FormikProps<any>;
 }
+
+export interface IRadioInputProps {
+  name: string;
+  label: string;
+  index: number;
+  selectedVariant: number;
+  handleVariantSelect: (index: number) => void;
+}

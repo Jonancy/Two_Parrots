@@ -4,7 +4,7 @@ import { handleMultipleFileUpload } from "../../middlewares/upload/upload.middle
 import { userRegisterSchema } from "../../schemas/user.schema";
 import { Request, Response } from "express-serve-static-core";
 import { uploadFile } from "../../utils/multer-manager";
-import { validateSchema } from "../../validations/validator";
+import { validateSchema } from "../../validator";
 import { checkUserExistence } from "../../middlewares/user/user.middleware";
 import { userOrderRoutes } from "./order.routes";
 import { userProductRoutes } from "./product.routes";

@@ -90,7 +90,7 @@ class AuthController {
         httpOnly: true, // Must be false to access in JS
         secure: false, // For local development. Set to true in production with HTTPS
         sameSite: "strict",
-        maxAge: 1000000, //For a day 24 hrs
+        maxAge: 10000000, //For a day 24 hrs
       });
 
       successHandler(res, 201, userDetails, "User logged in successfully!");

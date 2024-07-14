@@ -2,6 +2,7 @@ import { Products } from "@prisma/client";
 import { prisma } from "../..";
 import { IProduct, ISize, IVariant } from "../interfaces/product.interfaces";
 import { IProductDTO } from "../dtos/product.dto";
+import { productSelectFields } from "../utils/prismaSelectQueries";
 
 class ProductService {
   createProduct = async (data: IProductDTO): Promise<Products | null> => {
@@ -26,6 +27,7 @@ class ProductService {
     return !!product;
   };
 
+  //TODO: When the same variant is added need to check and update the same or create new variant
   createProductVariants = async (
     productId: string,
     data: IVariant,
@@ -59,30 +61,18 @@ class ProductService {
     return productVariant;
   };
 
+  getSpecificProduct = async (productId: string): Promise<IProduct> => {
+    const product = await prisma.products.findFirst({
+      where: { productId },
+      select: productSelectFields,
+    });
+
+    return product;
+  };
+
   getAllProducts = async (): Promise<IProduct[]> => {
     const product = await prisma.products.findMany({
-      // where: { view: { not: false }, isDeleted: { not: false } },
-      select: {
-        productId: true,
-        name: true,
-        gender: true,
-        isDeleted: true,
-        view: true,
-        price: true,
-        description: true,
-        createdAt: true,
-        category: {
-          select: { categoryId: true, categoryName: true },
-        },
-        variants: {
-          select: {
-            variantId: true,
-            color: true,
-            images: { select: { productImageId: true, url: true } },
-            sizes: { select: { sizeId: true, size: true, stock: true } },
-          },
-        },
-      },
+      select: productSelectFields,
     });
 
     return product;

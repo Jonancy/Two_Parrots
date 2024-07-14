@@ -1,16 +1,14 @@
 import React from "react";
 import { useFormik } from "formik";
 import { useParams } from "react-router-dom";
-import { useCreateProductVariant } from "@/queries/product/variant/varinat.query";
-import { addProductVariant } from "@/api/admin/product.api";
+import { useCreateProductVariant } from "@/queries/product/variant/variant.query";
 
 const sizeOptions = ["S", "M", "L", "XL", "XXL"];
 const colorOptions = ["red", "blue", "green", "yellow", "purple"];
 
 const AddProuctVariant = () => {
   const { productId } = useParams();
-
-  const { data, error, mutate } = useCreateProductVariant();
+  const { mutate } = useCreateProductVariant();
 
   const formik = useFormik({
     initialValues: {
@@ -19,6 +17,11 @@ const AddProuctVariant = () => {
       images: [] as File[],
     },
     onSubmit: async (values) => {
+      if (!productId) {
+        console.error("Product ID is required.");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("color", values.color);
       formData.append("sizes", JSON.stringify(values.sizes));
@@ -26,10 +29,7 @@ const AddProuctVariant = () => {
         formData.append(`image`, image);
       });
 
-      const res = await addProductVariant(formData, productId);
-      console.log(res.data);
-
-      // mutate(formData, productId);
+      mutate({ formData, productId });
     },
   });
 

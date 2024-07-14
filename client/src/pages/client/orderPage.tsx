@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/reduxStore";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { orderProduct } from "@/api/order/order.service";
+import { orderProduct } from "@/api/order/order.api";
 
 export default function OrderPage() {
   const cart = useSelector((state: RootState) => state.cart);
