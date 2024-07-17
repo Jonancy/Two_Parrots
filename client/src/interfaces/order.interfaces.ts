@@ -1,5 +1,4 @@
 import { IEsewaDecodeResponse } from "./esewa.interfaces";
-
 export interface IOrderItemsDTO {
   productId: string;
   variantId: string;
@@ -14,6 +13,7 @@ export interface IOrderDTO {
   totalPrice: number;
   phoneNumber: string;
   location: string;
+  paymentMethod: string;
   orderItems: IOrderItemsDTO[];
 }
 
@@ -23,4 +23,12 @@ export interface IFinalPayment {
   status: string;
   encodedData: IEsewaDecodeResponse;
   method: "Esewa" | "Khalti";
+}
+
+export interface IOrderPaymentValidation {
+  userName: string;
+  email: string;
+  location: string;
+  phoneNumber: string;
+  paymentMethod: string;
 }

@@ -94,7 +94,7 @@ model Orders {
   orderId       String         @id @default(cuid())
   userName      String
   email         String
-  phoneNumber   String
+  phoneNumber   Int
   location      String
   pidx          String?
   paymentMethod PaymentMethod?

@@ -1,7 +1,16 @@
 import { addProductVariant } from "@/api/admin/product.api";
-import { useMutation } from "@tanstack/react-query";
+import CustomError from "@/handlers/errors/customError";
+import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 
-export const useCreateProductVariant = () => {
+export const useCreateProductVariant = (): UseMutationResult<
+  IApiResponse<null>,
+  CustomError,
+  {
+    formData: FormData;
+    productId: string;
+  }
+> => {
   return useMutation({
     mutationFn: ({
       formData,
@@ -13,7 +22,7 @@ export const useCreateProductVariant = () => {
       return addProductVariant(formData, productId);
     },
 
-    onSettled: (success, error) => {
+    onSettled: (_, error) => {
       if (error) {
         console.log("faield", error);
       } else {

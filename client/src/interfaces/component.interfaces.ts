@@ -5,6 +5,7 @@ export interface IFormInputProps {
   type: string;
   placeholder: string;
   formik: FormikProps<any>;
+  className?: string;
 }
 
 export interface IRadioInputProps {
@@ -13,4 +14,13 @@ export interface IRadioInputProps {
   index: number;
   selectedVariant: number;
   handleVariantSelect: (index: number) => void;
+}
+
+export interface IClassNameProps {
+  className?: string;
+}
+
+export interface IButtonProps extends IClassNameProps {
+  handleOnClick: () => void;
+  buttonName: string;
 }

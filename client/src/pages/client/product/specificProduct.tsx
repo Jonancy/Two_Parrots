@@ -14,6 +14,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { useDispatch } from "react-redux";
 import { addItem } from "@/redux/slice/cartSlice";
 import { useGetSpecificProductQuery } from "@/hooks/queries/product/product.query";
+import { SetAddToCartNoti } from "@/helpers/addToCartNoti-helper";
 
 export default function SpecificProduct() {
   const { productId } = useParams();
@@ -85,6 +86,8 @@ export default function SpecificProduct() {
       console.log(cartItem);
 
       dispatch(addItem(cartItem));
+      SetAddToCartNoti();
+      console.log("added");
     } else {
       alert("Please select a variant and size.");
     }

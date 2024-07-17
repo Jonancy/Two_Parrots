@@ -32,6 +32,7 @@ class OrderController {
         ...orderDTO,
         totalPrice,
       };
+
       const order = await orderService.createOrder(orderMain);
 
       if (!order) {
@@ -41,34 +42,35 @@ class OrderController {
       const price = order.totalPrice * 100;
       console.log(price);
 
-      // const payLoadData: IKhaltiInitialPayload = {
-      //   return_url: "http://localhost:5000/paymentSuccess",
-      //   website_url: "http://localhost:5000",
-      //   amount: price,
-      //   purchase_order_id: order.orderId,
-      //   purchase_order_name: order.userName,
-      // };
+      if (orderMain.paymentMethod === "Khalti") {
+        const payLoadData: IKhaltiInitialPayload = {
+          return_url: "http://localhost:5000/paymentSuccess",
+          website_url: "http://localhost:5000",
+          amount: price,
+          purchase_order_id: order.orderId,
+          purchase_order_name: order.userName,
+        };
 
-      // await callKhalti(payLoadData)(req, res);
-      // console.log("lla");
-      const signature = createSignature(
-        `total_amount=${order.totalPrice},transaction_uuid=${order.orderId},product_code=EPAYTEST`
-      );
-      const formData = {
-        amount: order.totalPrice,
-        failure_url: "http://localhost:5000",
-        product_delivery_charge: "0",
-        product_service_charge: "0",
-        product_code: "EPAYTEST",
-        signature: signature,
-        signed_field_names: "total_amount,transaction_uuid,product_code",
-        success_url: "http://localhost:5000/paymentSuccess",
-        tax_amount: "0",
-        total_amount: order.totalPrice,
-        transaction_uuid: order.orderId,
-      };
-
-      successHandler(res, 201, formData, "Order Created Sucessfully");
+        return await callKhalti(payLoadData)(req, res);
+      } else {
+        const signature = createSignature(
+          `total_amount=${order.totalPrice},transaction_uuid=${order.orderId},product_code=EPAYTEST`
+        );
+        const formData = {
+          amount: order.totalPrice,
+          failure_url: "http://localhost:5000",
+          product_delivery_charge: "0",
+          product_service_charge: "0",
+          product_code: "EPAYTEST",
+          signature: signature,
+          signed_field_names: "total_amount,transaction_uuid,product_code",
+          success_url: "http://localhost:5000/paymentSuccess",
+          tax_amount: "0",
+          total_amount: order.totalPrice,
+          transaction_uuid: order.orderId,
+        };
+        return successHandler(res, 201, formData, "Order Created Sucessfully");
+      }
     } catch (e) {
       console.log(e);
 

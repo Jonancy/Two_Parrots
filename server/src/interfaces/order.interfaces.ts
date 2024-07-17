@@ -10,7 +10,8 @@ export interface IOrderDTO {
   userName: string;
   email: string;
   totalPrice: number;
-  phoneNumber: string;
+  phoneNumber: number;
   location: string;
+  paymentMethod: "Khalti" | "Esewa";
   orderItems: IOrderItemDTO[];
 }

@@ -26,8 +26,9 @@ const googleStrategy = new GoogleStrategy.Strategy(
           phoneNumber: "",
         };
         await userService.registerUser(userDTO);
+        console.log("new user created");
       } else {
-        console.log("user already ");
+        console.log("user already");
       }
 
       done(null, profile);

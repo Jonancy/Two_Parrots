@@ -1,6 +1,3 @@
-// src/ProductTable.tsx
-
-import React from "react";
 import {
   Table,
   TableBody,
@@ -10,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllAdminProductsQuery } from "@/queries/product/product.query";
-import LoginExpiredAlert from "@/components/alert/loginExpiredAlert";
-import { useNavigate, useParams } from "react-router-dom";
+// import LoginExpiredAlert from "@/components/alert/loginExpiredAlert";
+import { useNavigate } from "react-router-dom";
+import { useGetAllAdminProductsQuery } from "@/hooks/queries/product/product.query";
 
 // interface Product {
 //   productId: string;

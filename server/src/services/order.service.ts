@@ -5,9 +5,11 @@ import { userSelectFields } from "../utils/prismaSelectQueries";
 
 class OrderService {
   createOrder = async (orderInput: IOrderDTO) => {
+    const { paymentMethod, ...orderDetails } = orderInput;
+
     const order = await prisma.orders.create({
       data: {
-        ...orderInput,
+        ...orderDetails,
         orderItems: {
           create: orderInput.orderItems.map((item) => ({
             productId: item.productId,

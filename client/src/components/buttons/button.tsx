@@ -1,10 +1,20 @@
-const Button: React.FC<{ onclick: () => void }> = ({ onclick }) => {
+import { IButtonProps } from "@/interfaces/component.interfaces";
+import { cn } from "@/lib/utils";
+
+const Button: React.FC<IButtonProps> = ({
+  buttonName,
+  handleOnClick,
+  className,
+}) => {
   return (
     <button
-      onClick={onclick}
-      className="p-2 rounded-md bg-black text-white font-semibold hover:bg-neutral-800 duration-300"
+      onClick={handleOnClick}
+      className={cn(
+        "p-2 rounded-md bg-black text-white font-semibold hover:bg-neutral-800 duration-300",
+        className
+      )}
     >
-      Add to cart
+      {buttonName}
     </button>
   );
 };

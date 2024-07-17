@@ -4,27 +4,22 @@
 // } from "../../interfaces/types/auth/logiRegi.interfaces";
 // import { axiosInstance } from "../index.service";
 
-import { IUserState } from "@/interfaces/user.interfaces";
+import { IUserState, IUserWithAccessToken } from "@/interfaces/user.interfaces";
 import { ILoginDTO, IUserRegisterDTO } from "@/interfaces/auth.interfaces";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 import { axiosInstance } from "../index.api";
 
-export const RegisterUser = (form: IUserRegisterDTO) => {
-  return axiosInstance.post("/auth/registerUser", form);
+export const RegisterUser = async (
+  form: IUserRegisterDTO
+): Promise<IApiResponse<IUserWithAccessToken>> => {
+  return (await axiosInstance.post("/auth/registerUser", form)).data;
 };
 
-export const LoginUser = (form: ILoginDTO) => {
-  // const privateaxiosInstance = usePrivateAPI();
-  return axiosInstance.post("/auth/loginUser", form);
+export const LoginUser = async (
+  form: ILoginDTO
+): Promise<IApiResponse<IUserWithAccessToken>> => {
+  return (await axiosInstance.post("/auth/loginUser", form)).data;
 };
-
-// export const LogoutUser = () => {
-//   return axiosInstance.post("/auth/logout");
-// };
-
-// export const getAccessToken = () => {
-//   return axiosInstance.get("/auth/refresh");
-// };
 
 export const getUsers = async (): Promise<IApiResponse<IUserState[]>> => {
   return (await axiosInstance.get("/user/getUsers")).data;

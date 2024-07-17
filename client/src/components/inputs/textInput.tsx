@@ -1,19 +1,24 @@
 import { IFormInputProps } from "@/interfaces/component.interfaces";
+import { cn } from "@/lib/utils";
 
 const TextInput: React.FC<IFormInputProps> = ({
   name,
   placeholder,
   type,
   formik,
+  className,
 }) => {
   const isError = formik.touched[name] && formik.errors[name];
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1 h-[4rem] ">
       <input
-        className={`border-2 rounded-md p-2 outline-none ${
-          isError ? "border-red-500" : ""
-        }`}
+        className={cn(
+          ` rounded-md p-2 border focus:outline-black ${
+            isError ? "border-red-500" : ""
+          }`,
+          className
+        )}
         name={name}
         id={name}
         type={type}

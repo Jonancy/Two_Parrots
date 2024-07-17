@@ -26,9 +26,18 @@ class AuthController {
     try {
       const userDTO = req.body;
 
-      const hashedPass = await hashPassword(userDTO.password);
+      if (userDTO.confirmPassword !== userDTO.password) {
+        throw new CustomError("Password should match", 400);
+      }
+      const hashedPass = await hashPassword(userDTO.confirmPassword);
 
-      const hashedUser = { ...userDTO, password: hashedPass };
+      //!Removing confirm password
+      const { confirmPassword, ...userWithoutConfirmPassword } = userDTO;
+
+      const hashedUser = {
+        ...userWithoutConfirmPassword,
+        password: hashedPass,
+      };
 
       const userAddition = await userService.registerUser(hashedUser);
 

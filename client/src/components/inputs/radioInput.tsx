@@ -17,6 +17,7 @@ export default function RadioInput({
         type="radio"
         className="accent-black cursor-pointer w-[1rem] h-[1rem]"
         name={name}
+        id={name}
         checked={index === selectedVariant}
       ></input>
       <label htmlFor={name} className="cursor-pointer font-semibold text-sm">

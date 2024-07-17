@@ -1,5 +1,5 @@
 import { Users } from "@prisma/client";
-import { UserRegisterDTO } from "../dtos/user.dto";
+import { UserRegisterDTO, UserServiceRegisterDTO } from "../dtos/user.dto";
 import { prisma } from "../..";
 import { IUserDetails } from "../interfaces/user.interfaces";
 
@@ -23,7 +23,7 @@ class UserService {
   };
 
   //For registration of the user
-  registerUser = async (userDTO: UserRegisterDTO): Promise<boolean> => {
+  registerUser = async (userDTO: UserServiceRegisterDTO): Promise<boolean> => {
     console.log(userDTO);
 
     const user = await prisma.users.create({
