@@ -1,8 +1,16 @@
-import { Products } from "@prisma/client";
+import { Prisma, Products } from "@prisma/client";
 import { prisma } from "../..";
-import { IProduct, ISize, IVariant } from "../interfaces/product.interfaces";
-import { IProductDTO } from "../dtos/product.dto";
+import {
+  IFilterProduct,
+  IFilterProducts,
+  IFilterTypes,
+  IProduct,
+  ISize,
+  IVariant,
+} from "../interfaces/product.interfaces";
+import { IProductDTO, IProductPictureDTO } from "../dtos/product.dto";
 import { productSelectFields } from "../utils/prismaSelectQueries";
+import CustomError from "../handlers/errors/customError";
 
 class ProductService {
   createProduct = async (data: IProductDTO): Promise<Products | null> => {
@@ -76,6 +84,109 @@ class ProductService {
     });
 
     return product;
+  };
+
+  getFilterTypes = async (): Promise<IFilterTypes> => {
+    const productCategories = await prisma.categories.findMany({
+      select: { categoryName: true },
+    });
+
+    const filterTypes = {
+      gender: ["Men", "Women"],
+      categories: productCategories?.map((category) => category.categoryName),
+    };
+
+    return filterTypes;
+  };
+
+  getFilteredProducts = async ({
+    page,
+    limit,
+    filters,
+  }: IFilterProduct): Promise<IFilterProducts> => {
+    const offset = (page - 1) * limit;
+
+    let whereClause: Prisma.ProductsWhereInput = {};
+    console.log(filters, "asajsjajhsajh");
+
+    if (filters?.gender != undefined) {
+      whereClause.gender = { equals: filters.gender };
+    }
+
+    if (filters?.categories?.length > 0 && filters?.categories !== undefined) {
+      console.log("sasa");
+
+      whereClause.category = {
+        categoryName: {
+          in: filters.categories,
+        },
+      };
+    }
+
+    const products = await prisma.products.findMany({
+      skip: offset,
+      take: limit,
+      where: whereClause,
+      select: productSelectFields,
+      orderBy: [{ createdAt: "asc" }],
+    });
+
+    const totalProducts = await prisma.products.count({ where: whereClause });
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    return { products, currentPage: page, totalPages };
+  };
+
+  updateProduct = async (
+    productDTO: IProductDTO,
+    productId: string
+  ): Promise<boolean> => {
+    const updatedItem = await prisma.products.update({
+      where: { productId },
+      data: {
+        categoryId: productDTO.categoryId,
+        description: productDTO.description,
+        gender: productDTO.gender,
+        name: productDTO.name,
+        price: parseFloat(productDTO.price),
+      },
+    });
+
+    return !!updatedItem;
+  };
+  updateProductImages = async (
+    variant: IProductPictureDTO,
+    files: string[]
+  ) => {
+    if (variant) {
+      const updateImage = await prisma.productImages.deleteMany({
+        where: {
+          variantId: variant.variantId,
+          productImageId: {
+            in: variant.images.map((image) => image.productImageId),
+          },
+        },
+      });
+
+      if (!updateImage) {
+        throw new CustomError("Deletion of the picture failed", 400);
+      }
+    }
+
+    if (files.length > 0 && files) {
+      const newImages = await prisma.productImages.createMany({
+        data: files.map((image) => ({
+          url: image,
+          variantId: variant.variantId,
+        })),
+      });
+      if (!newImages) {
+        throw new CustomError("Addition of the picture failed", 400);
+      }
+    }
+
+    return true;
   };
 }
 

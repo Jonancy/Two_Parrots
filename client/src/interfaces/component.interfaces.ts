@@ -11,9 +11,8 @@ export interface IFormInputProps {
 export interface IRadioInputProps {
   name: string;
   label: string;
-  index: number;
-  selectedVariant: number;
-  handleVariantSelect: (index: number) => void;
+  selectedValue: string;
+  handleSelect: (value: string) => void;
 }
 
 export interface IClassNameProps {
@@ -23,4 +22,11 @@ export interface IClassNameProps {
 export interface IButtonProps extends IClassNameProps {
   handleOnClick: () => void;
   buttonName: string;
+}
+
+export interface ICheckBoxInputProps {
+  name: string;
+  className?: string;
+  selectedValue: string;
+  handleSelect: (value: string) => void;
 }

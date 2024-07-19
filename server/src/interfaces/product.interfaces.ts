@@ -33,3 +33,23 @@ export interface IImage {
   productImageId: string;
   url: string;
 }
+
+export interface IFilterTypes {
+  gender: string[];
+  categories: string[];
+}
+
+export interface IFilterProduct {
+  page: number;
+  limit: number;
+  filters?: {
+    gender?: "Men" | "Women";
+    categories?: string[];
+  };
+}
+
+export interface IFilterProducts {
+  products: IProduct[];
+  totalPages: number;
+  currentPage: number;
+}

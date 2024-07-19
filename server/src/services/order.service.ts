@@ -1,6 +1,6 @@
 import { Orders, OrderStatus, PaymentMethod } from "@prisma/client";
 import { prisma } from "../..";
-import { IOrderDTO } from "../interfaces/order.interfaces";
+import { IOrderDTO, IOrderStatusUpdate } from "../interfaces/order.interfaces";
 import { userSelectFields } from "../utils/prismaSelectQueries";
 
 class OrderService {
@@ -64,11 +64,9 @@ class OrderService {
   };
 
   updateOrderStatus = async (
-    status: OrderStatus,
-    orderId: string,
-    pidx: string,
-    paymentMethod: PaymentMethod
+    updateDTO: IOrderStatusUpdate
   ): Promise<boolean> => {
+    const { orderId, paymentMethod, pidx, status } = updateDTO;
     const update = await prisma.orders.update({
       where: { orderId },
       data: { status, pidx, paymentMethod },

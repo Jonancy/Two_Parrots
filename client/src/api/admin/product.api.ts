@@ -23,3 +23,31 @@ export const getAllProducts = async (): Promise<IApiResponse<IProduct[]>> => {
   return (await privateAxiosInstance.get("/admin/product/getProducts")).data;
   // return handleError(e as AxiosError);
 };
+
+export const updateProduct = async (
+  form: IProductDTO,
+  productId: string
+): Promise<IApiResponse<null>> => {
+  console.log(form);
+
+  return (
+    await privateAxiosInstance.patch(
+      `/admin/product/${productId}/updateProduct`,
+      form
+    )
+  ).data;
+};
+
+export const updateProductImages = async (
+  form: FormData,
+  productId: string
+): Promise<IApiResponse<null>> => {
+  console.log(form);
+
+  return (
+    await privateAxiosInstance.patch(
+      `/admin/product/${productId}/updateProductImage`,
+      form
+    )
+  ).data;
+};

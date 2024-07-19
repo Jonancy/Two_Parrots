@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { IRouteTypes } from "@/interfaces/routes.interfaces";
+const EditProducts = lazy(() => import("@/pages/admin/products/editProducts"));
 const AddProuctVariant = lazy(
   () => import("@/pages/admin/products/addVariant")
 );
@@ -24,15 +25,22 @@ export const adminRoutes: IRouteTypes[] = [
   },
   {
     id: "addProducts",
-    path: "/dashboard/products/addProducts",
+    path: "/dashboard/products/add-products",
     element: AddProducts,
     hasAdminLayout: true,
     hasAuth: true,
   },
   {
     id: "addVariant",
-    path: "/dashboard/products/:productId/addVariant",
+    path: "/dashboard/products/:productId/add-variant",
     element: AddProuctVariant,
+    hasAdminLayout: true,
+    hasAuth: true,
+  },
+  {
+    id: "addVariant",
+    path: "/dashboard/products/:productId/edit-product",
+    element: EditProducts,
     hasAdminLayout: true,
     hasAuth: true,
   },

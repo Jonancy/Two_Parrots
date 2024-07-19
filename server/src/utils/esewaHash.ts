@@ -1,12 +1,8 @@
-import crypto from "crypto";
+import CryptoJS from "crypto-js";
 
 export const createSignature = (message: string) => {
-  const secret = "8gBm/:&EnhH.1/q"; //different in production
-  // Create an HMAC-SHA256 hash
-  const hmac = crypto.createHmac("sha256", secret);
-  hmac.update(message);
-
-  // Get the digest in base64 format
-  const hashInBase64 = hmac.digest("base64");
+  const secretKey = "8gBm/:&EnhH.1/q";
+  const hash = CryptoJS.HmacSHA256(message, secretKey);
+  const hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
   return hashInBase64;
 };

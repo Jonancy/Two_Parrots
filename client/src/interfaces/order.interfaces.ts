@@ -21,7 +21,7 @@ export interface IFinalPayment {
   pidx: string;
   orderId: string;
   status: string;
-  encodedData: IEsewaDecodeResponse;
+  encodedData: string;
   method: "Esewa" | "Khalti";
 }
 

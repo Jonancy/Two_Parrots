@@ -13,7 +13,7 @@ export const verifyAccessJwtTokenMiddleware = async (
   try {
     const bearerToken = req.headers.authorization;
 
-    console.log(bearerToken);
+    // console.log(bearerToken);
 
     if (!bearerToken) {
       throw new CustomError("Access Token expired", 401);

@@ -1,8 +1,9 @@
 import TextInput from "@/components/inputs/textInput";
 import { toast } from "@/components/ui/use-toast";
 import { IProductDTO } from "@/dtos/product.dto";
-import { useGetCategory } from "@/queries/category/category.query";
-import { useAddProductQuery } from "@/queries/product/product.query";
+import { useGetCategory } from "@/hooks/queries/category/category.query";
+import { useAddProductQuery } from "@/hooks/queries/product/product.query";
+
 import { useFormik } from "formik";
 import { useEffect } from "react";
 

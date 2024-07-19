@@ -119,10 +119,10 @@ class AuthController {
       if (!refreshToken) {
         throw new CustomError("No refresh token received", 401);
       }
-      console.log(req.cookies);
+      // console.log(req.cookies);
 
       const verifiedToken = jwtRefreshVerification(refreshToken);
-      console.log(verifiedToken);
+      // console.log(verifiedToken);
 
       if (!verifiedToken) {
         throw new CustomError("Unauthorized", 500);

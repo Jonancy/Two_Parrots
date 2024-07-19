@@ -1,13 +1,33 @@
-import { addProduct, getAllProducts } from "@/api/admin/product.api";
+import {
+  addProduct,
+  getAllProducts,
+  updateProduct,
+  updateProductImages,
+} from "@/api/admin/product.api";
 import {
   getAllProductClient,
+  getFilterProductClient,
+  getFilterTypes,
   getSpecificProductClient,
 } from "@/api/client/product.api";
+import { toast } from "@/components/ui/use-toast";
 import { QUERY_PRODUCTS_KEY } from "@/constants/query.constant";
+import { IProductDTO } from "@/dtos/product.dto";
 import CustomError from "@/handlers/errors/customError";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
-import { IProduct } from "@/interfaces/product.interfaces";
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
+import {
+  IFilterProduct,
+  IFilterProducts,
+  IFilterTypes,
+  IProduct,
+} from "@/interfaces/product.interfaces";
+import {
+  QueryClient,
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 export const useGetAllAdminProductsQuery = (): UseQueryResult<
   IApiResponse<IProduct[]>,
@@ -52,5 +72,87 @@ export const useGetSpecificProductQuery = (
     queryKey: ["productsClient", productId],
     queryFn: () => getSpecificProductClient(productId),
     retry: 0,
+  });
+};
+
+export const useGetFilterTypes = (): UseQueryResult<
+  IApiResponse<IFilterTypes>,
+  CustomError
+> => {
+  return useQuery({
+    queryKey: ["filterTypes"],
+    queryFn: getFilterTypes,
+  });
+};
+
+export const useGetClientFilterProductsQuery = ({
+  page,
+  filters,
+}: IFilterProduct): UseQueryResult<
+  IApiResponse<IFilterProducts>,
+  CustomError
+> => {
+  return useQuery({
+    queryKey: ["filterProducts", page, filters],
+    queryFn: () => getFilterProductClient({ page, filters }),
+    retry: 0,
+  });
+};
+
+export const useUpdateProductQuery = (): UseMutationResult<
+  IApiResponse<null>,
+  CustomError,
+  { form: IProductDTO; productId: string }
+> => {
+  const useClientQuery = new QueryClient();
+
+  return useMutation({
+    mutationFn: ({ form, productId }) => updateProduct(form, productId),
+    onSettled: (success, error, variables) => {
+      if (error) {
+        console.log(variables.form, "as");
+        toast({
+          title: error.response.data.message,
+        });
+      } else {
+        console.log(variables.productId, "as");
+
+        useClientQuery.invalidateQueries({
+          queryKey: ["productsClient", variables.productId],
+        });
+        toast({
+          title: success?.message,
+        });
+      }
+    },
+  });
+};
+
+export const useUpdateProductImageQuery = (): UseMutationResult<
+  IApiResponse<null>,
+  CustomError,
+  { form: FormData; productId: string }
+> => {
+  const useClientQuery = new QueryClient();
+
+  return useMutation({
+    mutationFn: ({ form, productId }) => updateProductImages(form, productId),
+    onSettled: (success, error, variables) => {
+      if (error) {
+        console.log(variables.form.get("images"), "as");
+        toast({
+          title: error.response.data.message,
+        });
+      } else {
+        console.log(variables.productId, "as");
+
+        useClientQuery.invalidateQueries({
+          queryKey: ["productsClient", variables.productId],
+        });
+        toast({
+          title: success?.message,
+        });
+      }
+    },
   });
 };

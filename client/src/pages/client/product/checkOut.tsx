@@ -13,6 +13,7 @@ import {
   IOrderPaymentValidation,
 } from "@/interfaces/order.interfaces";
 import { useOrderCart } from "@/hooks/queries/product/order/order.query";
+import { IEsewaInitiate } from "@/interfaces/esewa.interfaces";
 
 const SelectPaymentMethod = ({
   name,
@@ -85,7 +86,27 @@ export default function CheckOut() {
   });
 
   if (data) {
-    window.open(`${data?.data?.payment_url}`, "_self");
+    if (data.data.pidx) {
+      window.open(`${data?.data?.payment_url}`, "_self");
+    } else {
+      const formData = data.data;
+      const path = "https://rc-epay.esewa.com.np/api/epay/main/v2/form";
+
+      const form = document.createElement("form");
+      form.setAttribute("method", "POST");
+      form.setAttribute("action", path);
+
+      for (const key in formData) {
+        const hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", formData[key]);
+        form.appendChild(hiddenField);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
   }
   console.log(data);
   console.log(error);

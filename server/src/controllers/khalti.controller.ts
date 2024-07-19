@@ -9,7 +9,8 @@ import { successHandler } from "../handlers/success/successHandler";
 import { KHALTI_SECRET_KEY } from "../../secrets";
 
 export const callKhalti =
-  (formData: IKhaltiInitialPayload) => async (req: Request, res: Response) => {
+  (formData: IKhaltiInitialPayload) =>
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const headers = {
         Authorization: `Key ${KHALTI_SECRET_KEY}`,
@@ -26,10 +27,7 @@ export const callKhalti =
       console.log(response.data);
       return successHandler(res, 201, response.data, "Order success by khalti");
     } catch (e) {
-      let err = e.response.data;
-      return res
-        .status(err.status_code)
-        .json({ success: false, message: err.detail });
+      next();
     }
   };
 
@@ -39,7 +37,7 @@ export const handleKhaltiCallback = async (
 ): Promise<IKhaltiCallBackResponse> => {
   try {
     const headers = {
-      Authorization: `Key asa`,
+      Authorization: `Key ${KHALTI_SECRET_KEY}`,
       "Content-Type": "application/json",
     };
     const response = await axios.post(
@@ -48,7 +46,7 @@ export const handleKhaltiCallback = async (
       { headers }
     );
 
-    console.log(response.data);
+    console.log(response.data, "khalti resisn");
 
     return response.data;
   } catch (e) {

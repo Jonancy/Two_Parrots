@@ -28,7 +28,7 @@ export interface ISize {
 }
 
 export interface IImage {
-  productImageId: string;
+  productImageId?: string;
   url: string;
 }
 
@@ -41,4 +41,23 @@ export interface ICartItem {
   size: ISize;
   quantity: number;
   price: number;
+}
+
+export interface IFilterTypes {
+  gender: string[];
+  categories: string[];
+}
+
+export interface IFilterProducts {
+  products: IProduct[];
+  totalPages: number;
+  currentPage: number;
+}
+
+export interface IFilterProduct {
+  page: number;
+  filters: {
+    gender?: string | undefined;
+    categories?: string[] | undefined;
+  };
 }

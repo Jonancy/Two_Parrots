@@ -101,16 +101,26 @@ const ProductLists = () => {
               ))}
             </TableCell>
 
-            <TableCell>
+            <TableCell className="flex gap-2 ">
               <button
                 className="p-2 rounded-md bg-blue-500 text-white font-semibold text-xs"
                 onClick={() =>
                   navigate(
-                    `/dashboard/products/${product.productId}/addVariant`
+                    `/dashboard/products/${product.productId}/add-variant`
                   )
                 }
               >
                 Add variant
+              </button>
+              <button
+                className="p-2 rounded-md bg-blue-500 text-white font-semibold text-xs"
+                onClick={() =>
+                  navigate(
+                    `/dashboard/products/${product.productId}/edit-product`
+                  )
+                }
+              >
+                Edit product
               </button>
             </TableCell>
           </TableRow>

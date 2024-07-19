@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
 import { productService } from "../services/product.service";
-import { IVariant } from "../interfaces/product.interfaces";
+import {
+  IFilterProduct,
+  IFilterTypes,
+  IVariant,
+} from "../interfaces/product.interfaces";
 import { successHandler } from "../handlers/success/successHandler";
 import CustomError from "../handlers/errors/customError";
-import { IProductDTO } from "../dtos/product.dto";
+import { IProductDTO, IProductPictureDTO } from "../dtos/product.dto";
 
 class ProductController {
   createProduct = async (
@@ -88,6 +92,102 @@ class ProductController {
       }
 
       successHandler(res, 200, product, "Required product");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getFilterTypes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const filterTypes: IFilterTypes = await productService.getFilterTypes();
+
+      successHandler(res, 200, filterTypes, "These are the filter types");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getFilteredProducts = async (
+    req: Request<{}, {}, {}, IFilterProduct>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { page = 1, limit = 6, filters } = req.query;
+
+      const products = await productService.getFilteredProducts({
+        page,
+        limit,
+        filters,
+      });
+
+      successHandler(res, 200, products, "All products");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  updateProduct = async (
+    req: Request<{ productId: string }, {}, IProductDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const productDTO = req.body;
+    const { productId } = req.params;
+
+    const updateProduct = await productService.updateProduct(
+      productDTO,
+      productId
+    );
+
+    if (!updateProduct) {
+      throw new CustomError("Updation failed", 400);
+    }
+
+    return successHandler(
+      res,
+      201,
+      null,
+      "Product has been updated successfully."
+    );
+  };
+  updateProductImages = async (
+    req: Request<{ productId: string }, {}, IProductPictureDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const variantDTO = req.body;
+      const productId = req.params.productId;
+      const files = req.images;
+      // console.log(variantDTO, "asas");
+      console.log(req.body, "aas");
+      console.log(files, "lol");
+
+      let image: { productImageId?: string; url?: File | null }[] =
+        typeof variantDTO.images === "string" && JSON.parse(variantDTO.images);
+      // const convertedImages = JSON.parse(variantDTO?.images);
+      console.log(image);
+
+      const deletedImages = image?.filter(
+        (image) => image.productImageId != undefined
+      );
+
+      const images: IProductPictureDTO = {
+        variantId: variantDTO.variantId,
+        images: deletedImages,
+      };
+
+      const updatedImages = await productService.updateProductImages(
+        images,
+        files
+      );
+
+      if (!updatedImages) {
+        throw new CustomError("Not Updated", 400);
+      }
+
+      successHandler(res, 201, null, "Pass");
     } catch (e) {
       next(e);
     }

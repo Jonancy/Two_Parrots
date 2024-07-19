@@ -4,10 +4,10 @@ import { verifyAccessJwtTokenMiddleware } from "./jwt.middleware";
 
 const adminAuth = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.user);
+    // console.log(req.user);
 
     if (req.user.role === "Admin") {
-      console.log("pass");
+      // console.log("pass");
 
       next();
     } else {

@@ -1,5 +1,8 @@
 import { lazy } from "react";
 import { IRouteTypes } from "@/interfaces/routes.interfaces";
+const FilterProducts = lazy(
+  () => import("@/pages/client/product/filterProducts")
+);
 const CheckOut = lazy(() => import("@/pages/client/product/checkOut"));
 const SpecificProduct = lazy(
   () => import("@/pages/client/product/specificProduct")
@@ -38,6 +41,12 @@ export const userRoutes: IRouteTypes[] = [
     id: "specificProduct",
     path: "/product/check-out",
     element: CheckOut,
+    hasHomeLayout: true,
+  },
+  {
+    id: "filterProducts",
+    path: "/product/filter-products",
+    element: FilterProducts,
     hasHomeLayout: true,
   },
 ];

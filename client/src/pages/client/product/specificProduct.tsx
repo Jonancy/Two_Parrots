@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { addItem } from "@/redux/slice/cartSlice";
 import { useGetSpecificProductQuery } from "@/hooks/queries/product/product.query";
 import { SetAddToCartNoti } from "@/helpers/addToCartNoti-helper";
+import { toast } from "@/components/ui/use-toast";
 
 export default function SpecificProduct() {
   const { productId } = useParams();
@@ -71,7 +72,6 @@ export default function SpecificProduct() {
     if (selectedSize && selectedVariant) {
       const { productId, name, price } = product as IProduct;
       const { variantId, color, images } = selectedVariant as IVariant;
-      const parsedQuantity = parseInt(quantity);
 
       const cartItem: ICartItem = {
         productId,
@@ -80,12 +80,14 @@ export default function SpecificProduct() {
         variantId,
         color,
         size: selectedSize,
-        quantity: parsedQuantity,
+        quantity: quantity,
         price,
       };
+
       console.log(cartItem);
 
       dispatch(addItem(cartItem));
+      toast({ title: "New item added to the cart" });
       SetAddToCartNoti();
       console.log("added");
     } else {
@@ -201,7 +203,7 @@ export default function SpecificProduct() {
                 </div>
               </div>
             </div>
-            <Button onclick={addToCart} />
+            <Button buttonName="Add To Cart" handleOnClick={addToCart} />
           </div>
           <div className="mt-6">
             <h1 className="text-xl font-semibold">Rules</h1>

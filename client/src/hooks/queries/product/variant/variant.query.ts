@@ -12,13 +12,7 @@ export const useCreateProductVariant = (): UseMutationResult<
   }
 > => {
   return useMutation({
-    mutationFn: ({
-      formData,
-      productId,
-    }: {
-      formData: FormData;
-      productId: string;
-    }) => {
+    mutationFn: ({ formData, productId }) => {
       return addProductVariant(formData, productId);
     },
 
