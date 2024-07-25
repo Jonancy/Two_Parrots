@@ -1,5 +1,4 @@
 import express from "express";
-import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import { errorHandler } from "./src/handlers/errors/errorHandler";
@@ -7,21 +6,21 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import indexRoutes from "./src/routes/index.routes";
 import { handleNotFound } from "./src/handlers/errors/error404Handler";
+import passport from "passport";
+import { PORT, FRONTEND_BASE_URL } from "./secrets";
 
-dotenv.config();
 const app = express();
-const port = process.env.PORT || 8000;
-const frontendUrl = process.env.FRONTEND_BASE_URL;
-console.log(frontendUrl);
+const port = PORT || 8000;
 
 // Use helmet for security headers
 app.use(helmet());
 app.use(cookieParser());
+app.use(passport.initialize());
 
 // Configure CORS to allow requests from the frontend URL
 app.use(
   cors({
-    origin: frontendUrl,
+    origin: FRONTEND_BASE_URL,
     credentials: true,
     // methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -32,7 +31,7 @@ app.use(
 app.use(
   "/uploads",
   (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", frontendUrl);
+    res.header("Access-Control-Allow-Origin", FRONTEND_BASE_URL);
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Cross-Origin-Resource-Policy", "cross-origin"); // With this config file haru read garna milcha
 

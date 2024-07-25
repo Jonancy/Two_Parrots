@@ -1,12 +1,15 @@
+import { Orders, OrderStatus, PaymentMethod } from "@prisma/client";
 import { prisma } from "../..";
-import { IOrderDTO } from "../interfaces/order.interfaces";
+import { IOrderDTO, IOrderStatusUpdate } from "../interfaces/order.interfaces";
 import { userSelectFields } from "../utils/prismaSelectQueries";
 
 class OrderService {
   createOrder = async (orderInput: IOrderDTO) => {
+    const { paymentMethod, ...orderDetails } = orderInput;
+
     const order = await prisma.orders.create({
       data: {
-        ...orderInput,
+        ...orderDetails,
         orderItems: {
           create: orderInput.orderItems.map((item) => ({
             productId: item.productId,
@@ -31,7 +34,8 @@ class OrderService {
         orderId: true,
         status: true,
         totalPrice: true,
-        user: { select: userSelectFields },
+        userName: true,
+        email: true,
         createdAt: true,
         orderItems: {
           select: {
@@ -48,6 +52,27 @@ class OrderService {
       },
     });
     return orders;
+  };
+
+  //!For checking the order for now
+  getSpecificOrder = async (id: string): Promise<Orders> => {
+    const order = await prisma.orders.findFirst({
+      where: { orderId: id, status: "Pending" },
+    });
+
+    return order;
+  };
+
+  updateOrderStatus = async (
+    updateDTO: IOrderStatusUpdate
+  ): Promise<boolean> => {
+    const { orderId, paymentMethod, pidx, status } = updateDTO;
+    const update = await prisma.orders.update({
+      where: { orderId },
+      data: { status, pidx, paymentMethod },
+    });
+
+    return !!update;
   };
 }
 

@@ -3,7 +3,8 @@ import { orderController } from "../../controllers/order.controller";
 
 export const userOrderRoutes = Router();
 
-userOrderRoutes.post("/order/:userId", orderController.createOrder);
+userOrderRoutes.post("/createOrder", orderController.createOrder);
+userOrderRoutes.post("/payment", orderController.finalPayment);
 
 userOrderRoutes.get(
   "/order/getAllOrderDetails",

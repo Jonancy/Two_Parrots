@@ -1,42 +1,21 @@
 import { Request, Response, NextFunction } from "express-serve-static-core";
 import { productService } from "../services/product.service";
-import { ICategory, IVariant } from "../interfaces/product.interfaces";
+import {
+  IFilterProduct,
+  IFilterTypes,
+  IProduct,
+  IVariant,
+} from "../interfaces/product.interfaces";
 import { successHandler } from "../handlers/success/successHandler";
 import CustomError from "../handlers/errors/customError";
-import { IProductDTO } from "../dtos/product.dto";
+import {
+  IProductDTO,
+  IProductPictureDTO,
+  ISizeUpdateDTO,
+} from "../dtos/product.dto";
+// import { redisClient } from "../config/redis/redis";
 
 class ProductController {
-  createCategory = async (
-    req: Request<{}, {}, ICategory>,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const categoryDTO = req.body;
-
-      const categoryExist = await productService.checkCategoryExistence(
-        categoryDTO.categoryName
-      );
-
-      if (categoryExist) {
-        throw new CustomError("The category already exists", 409);
-      }
-
-      const category = await productService.addCategories(categoryDTO);
-
-      if (!category) {
-        throw new CustomError(
-          "Something went wrong while addition of the category",
-          500
-        );
-      }
-
-      return successHandler(res, 201, null, "Category added successfully.");
-    } catch (e) {
-      next(e);
-    }
-  };
-
   createProduct = async (
     req: Request<{}, {}, IProductDTO>,
     res: Response,
@@ -97,12 +76,165 @@ class ProductController {
 
   getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await productService.getAllProducts();
+      let products: IProduct[];
+
+      // const cachedProducts = await redisClient.get("products");
+
+      // if (cachedProducts) {
+      //   products = JSON.parse(cachedProducts);
+      // } else {
+      products = await productService.getAllProducts();
+
+      // const productDetails = JSON.stringify(products);
+
+      // await redisClient.setEx("products", 4000, productDetails);
+      // }
 
       successHandler(res, 200, products, "All products");
     } catch (e) {
       next(e);
     }
+  };
+
+  getSpecificProduct = async (
+    req: Request<{ productId: string }>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const productId = req.params.productId;
+      const product = await productService.getSpecificProduct(productId);
+
+      if (!product) {
+        throw new CustomError("No product found", 404);
+      }
+
+      successHandler(res, 200, product, "Required product");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getFilterTypes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const filterTypes: IFilterTypes = await productService.getFilterTypes();
+
+      successHandler(res, 200, filterTypes, "These are the filter types");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getFilteredProducts = async (
+    req: Request<{}, {}, {}, IFilterProduct>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { page = 1, limit = 6, filters } = req.query;
+
+      const products = await productService.getFilteredProducts({
+        page,
+        limit,
+        filters,
+      });
+
+      successHandler(res, 200, products, "All products");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  updateProduct = async (
+    req: Request<{ productId: string }, {}, IProductDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const productDTO = req.body;
+    const { productId } = req.params;
+
+    const updateProduct = await productService.updateProduct(
+      productDTO,
+      productId
+    );
+
+    if (!updateProduct) {
+      throw new CustomError("Updation failed", 400);
+    }
+
+    return successHandler(
+      res,
+      201,
+      null,
+      "Product has been updated successfully."
+    );
+  };
+
+  updateProductImages = async (
+    req: Request<{ productId: string }, {}, IProductPictureDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const variantDTO = req.body;
+      const productId = req.params.productId;
+      const files = req.images;
+      // console.log(variantDTO, "asas");
+      console.log(req.body, "aas");
+      console.log(files, "lol");
+
+      let image: { productImageId?: string; url?: File | null }[] =
+        typeof variantDTO.images === "string" && JSON.parse(variantDTO.images);
+      // const convertedImages = JSON.parse(variantDTO?.images);
+      console.log(image);
+
+      const deletedImages = image?.filter(
+        (image) => image.productImageId != undefined
+      );
+
+      const images: IProductPictureDTO = {
+        variantId: variantDTO.variantId,
+        images: deletedImages,
+      };
+
+      const updatedImages = await productService.updateProductImages(
+        images,
+        files
+      );
+
+      if (!updatedImages) {
+        throw new CustomError("Not Updated", 400);
+      }
+
+      successHandler(res, 201, null, "Pass");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  updateProductSize = async (
+    req: Request<{ variantId: string }, {}, ISizeUpdateDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const productDTO = req.body;
+    const { variantId } = req.params;
+
+    const updateProduct = await productService.updateProductSize(
+      productDTO,
+      variantId
+    );
+
+    if (!updateProduct) {
+      throw new CustomError("Updation failed", 400);
+    }
+
+    return successHandler(
+      res,
+      201,
+      null,
+      "Product has been updated successfully."
+    );
   };
 }
 

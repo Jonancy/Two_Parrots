@@ -22,3 +22,20 @@ adminProductRoutes.post(
 );
 
 adminProductRoutes.get("/getProducts", productController.getAllProducts);
+
+adminProductRoutes.patch(
+  "/:productId/updateProduct",
+  productController.updateProduct
+);
+
+adminProductRoutes.patch(
+  "/:productId/updateProductImage",
+  uploadFile.fields([{ name: "image", maxCount: 10 }]),
+  handleMultipleFileUpload(["image"], "twoParrot"),
+  productController.updateProductImages
+);
+
+adminProductRoutes.patch(
+  "/:variantId/updateProuctSize",
+  productController.updateProductSize
+);

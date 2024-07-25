@@ -1,20 +1,16 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
 import jwt from "jsonwebtoken";
 import {
   JwtAccessPayloadExtended,
   JwtRefreshPayloadExtended,
 } from "../interfaces/jwt.interfaces";
-
-const JWT_REFRESH_SECRET_KEY = process.env.JWT_REFRESH_SECRET_KEY;
-const JWT_ACCESS_SECRET_KEY = process.env.JWT_ACCESS_SECRET_KEY;
+import { JWT_ACCESS_SECRET_KEY, JWT_REFRESH_SECRET_KEY } from "../../secrets";
 
 //!For Refresh token
 // Function to create a JWT
 export const jwtRefreshCreation = ({
-  id,
+  userId,
 }: JwtRefreshPayloadExtended): string => {
-  const token = jwt.sign({ id }, JWT_REFRESH_SECRET_KEY, {
+  const token = jwt.sign({ userId }, JWT_REFRESH_SECRET_KEY, {
     expiresIn: "10d",
     algorithm: "HS256", // Algorithm used to sign the token
   });
@@ -30,10 +26,10 @@ export const jwtRefreshVerification = (
 
 //!For Access token
 export const jwtAccessCreation = ({
-  id,
-  email,
+  userId,
+  role,
 }: JwtAccessPayloadExtended): string => {
-  const token = jwt.sign({ id, email }, JWT_ACCESS_SECRET_KEY, {
+  const token = jwt.sign({ userId, role }, JWT_ACCESS_SECRET_KEY, {
     expiresIn: "10m",
     algorithm: "HS256", // Algorithm used to sign the token
   });

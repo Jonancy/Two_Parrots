@@ -51,35 +51,33 @@ export const handleMultipleFileUpload = (
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       let uploadedFiles: string[] = [];
-      console.log(req.body);
+      console.log(req.body, "asas");
+      console.log(req.files);
 
       // Check if any files were uploaded
-      if (!req.files) {
-        return next(new CustomError("No files uploaded.", 400));
-      }
+      if (req.files) {
+        // Iterate over the field names and upload each file
+        for (const fieldName of fieldNames) {
+          const files = req.files[fieldName];
 
-      // Iterate over the field names and upload each file
-      for (const fieldName of fieldNames) {
-        const files = req.files[fieldName];
-
-        if (!files) {
-          return next(
-            new CustomError(`No file uploaded for ${fieldName}`, 400)
-          );
+          if (files) {
+            // return next(
+            //   new CustomError(`No file uploaded for ${fieldName}`, 400)
+            // );
+            if (Array.isArray(files)) {
+              const uploadedFileUrls = await Promise.all(
+                files.map(async (file) => {
+                  const fileBuffer = file.buffer;
+                  return await uploadToCloudinary(fileBuffer, folder);
+                })
+              );
+              uploadedFiles = uploadedFileUrls;
+            }
+          }
+          console.log("pass", uploadedFiles);
+          req.images = uploadedFiles;
         }
-
-        if (Array.isArray(files)) {
-          const uploadedFileUrls = await Promise.all(
-            files.map(async (file) => {
-              const fileBuffer = file.buffer;
-              return await uploadToCloudinary(fileBuffer, folder);
-            })
-          );
-          uploadedFiles = uploadedFileUrls;
-        }
       }
-      console.log("pass", uploadedFiles);
-      req.images = uploadedFiles;
 
       next();
     } catch (error) {

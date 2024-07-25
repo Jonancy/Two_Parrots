@@ -4,16 +4,17 @@ import { handleMultipleFileUpload } from "../../middlewares/upload/upload.middle
 import { userRegisterSchema } from "../../schemas/user.schema";
 import { Request, Response } from "express-serve-static-core";
 import { uploadFile } from "../../utils/multer-manager";
-import { validateSchema } from "../../validations/validator";
+import { validateSchema } from "../../validator";
 import { checkUserExistence } from "../../middlewares/user/user.middleware";
 import { userOrderRoutes } from "./order.routes";
 import { userProductRoutes } from "./product.routes";
+import { checkRecordExistsMiddleware } from "../../middlewares/checkRecordExistsMiddleware";
 
 export const userRoutes = Router();
 userRoutes.use("/order", userOrderRoutes);
 userRoutes.use("/product", userProductRoutes);
 
-userRoutes.get("/getUser", userController.getUserDetails);
+userRoutes.get("/getUsers", userController.getUserDetails);
 
 userRoutes.get("/getSpecificUser/:id", userController.getSpecificUser);
 
@@ -27,5 +28,15 @@ userRoutes.post(
     let images = req.images;
     console.log(images);
     res.status(201).json({ images: req.images });
+  }
+);
+
+userRoutes.post(
+  "/:userId",
+  checkRecordExistsMiddleware("users", "userId"),
+  (req: Request, res: Response) => {
+    res.status(201).json({ user: req["users"] });
+
+    console.log("pass");
   }
 );

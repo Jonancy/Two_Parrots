@@ -1,3 +1,5 @@
+import { OrderStatus, PaymentMethod } from "@prisma/client";
+
 export interface IOrderItemDTO {
   productId: string;
   variantId: string;
@@ -7,9 +9,18 @@ export interface IOrderItemDTO {
 }
 
 export interface IOrderDTO {
-  userId: string;
+  userName: string;
+  email: string;
   totalPrice: number;
-  phoneNumber: string;
+  phoneNumber: number;
   location: string;
+  paymentMethod: "Khalti" | "Esewa";
   orderItems: IOrderItemDTO[];
+}
+
+export interface IOrderStatusUpdate {
+  status: OrderStatus;
+  orderId: string;
+  pidx: string;
+  paymentMethod: PaymentMethod;
 }

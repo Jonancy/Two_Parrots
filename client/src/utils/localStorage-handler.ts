@@ -1,7 +1,13 @@
 import { IUserState } from "@/interfaces/user.interfaces";
 
-export const setLocalStorage = ({ id, picture, name, email }: IUserState) => {
-  const userDetails = JSON.stringify({ id, picture, name, email });
+export const setLocalStorage = ({
+  userId,
+  picture,
+  name,
+  email,
+  number,
+}: IUserState) => {
+  const userDetails = JSON.stringify({ userId, picture, name, email, number });
 
   localStorage.setItem("data", userDetails);
 };
@@ -16,5 +22,5 @@ export const getLocalStorage = (): IUserState | null => {
 };
 
 export const clearLocalStorage = () => {
-  localStorage.clear();
+  localStorage.removeItem("data");
 };

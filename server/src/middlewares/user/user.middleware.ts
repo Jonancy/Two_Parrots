@@ -12,10 +12,16 @@ export const checkUserExistence = async (
     const userDTO = req.body;
     const userExists = await userService.getUserByEmail(userDTO.email);
     if (userExists) {
-      throw new CustomError(
-        "User has been already registered with this email",
-        400
-      );
+      return res.status(400).json({
+        success: false,
+        message: "Validation errors",
+        errors: [
+          {
+            field: "email",
+            message: "User has been already registered with this email",
+          },
+        ],
+      });
     }
 
     req.user = userExists;
@@ -35,7 +41,16 @@ export const checkUserLogin = async (
     const user = await userService.getUserByEmail(userDTO.email);
 
     if (!user) {
-      throw new CustomError("User has not been registered yet!", 400);
+      return res.status(400).json({
+        success: false,
+        message: "Validation errors",
+        errors: [
+          {
+            field: "email",
+            message: "User has not been registered yet",
+          },
+        ],
+      });
     }
 
     //Injecting the values for reusing

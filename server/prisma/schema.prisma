@@ -22,14 +22,13 @@ model Users {
   userId      String   @id @default(cuid())
   name        String
   email       String   @unique
-  phoneNumber String
+  phoneNumber String?
   picture     String?  @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
-  password    String
+  password    String?
   location    String?
   role        Role     @default(User)
   updatedAt   DateTime @updatedAt()
   createdAt   DateTime @default(now())
-  orders      Orders[]
 }
 
 enum Gender {
@@ -92,16 +91,18 @@ model ProductImages {
 }
 
 model Orders {
-  orderId     String       @id @default(cuid())
-  user        Users        @relation(fields: [userId], references: [userId])
-  userId      String
-  phoneNumber String
-  location    String
-  orderItems  OrderItems[]
-  totalPrice  Float
-  status      OrderStatus  @default(Pending)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt()
+  orderId       String         @id @default(cuid())
+  userName      String
+  email         String
+  phoneNumber   Int
+  location      String
+  pidx          String?
+  paymentMethod PaymentMethod?
+  orderItems    OrderItems[]
+  totalPrice    Float
+  status        OrderStatus    @default(Pending)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt()
 }
 
 enum OrderStatus {
@@ -110,6 +111,11 @@ enum OrderStatus {
   Shipped
   Delivered
   Cancelled
+}
+
+enum PaymentMethod {
+  Khalti
+  Esewa
 }
 
 model OrderItems {

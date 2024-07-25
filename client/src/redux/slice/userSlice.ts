@@ -5,19 +5,19 @@ import {
   getLocalStorage,
   clearLocalStorage,
 } from "@/utils/localStorage-handler";
-import { IUserState } from "@/interfaces/user.interfaces";
+import { IUserWithAccessToken } from "@/interfaces/user.interfaces";
 
 const localStorageData = getLocalStorage();
 
-interface IUserWithAccessToken extends IUserState {
-  token: string;
-}
+//!The user state is only used and the token is extended kina ki i dont want to store the access token on the local storage
+//! tei cache ma store garchu so extend gareko naya interface
 
 const initialState: IUserWithAccessToken = {
-  id: localStorageData?.id ?? "",
+  userId: localStorageData?.userId ?? "",
   picture: localStorageData?.picture ?? "",
   name: localStorageData?.name ?? "",
   email: localStorageData?.email ?? "",
+  number: localStorageData?.number ?? "",
   token: "",
 };
 
@@ -26,39 +26,43 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setData: (state, action: PayloadAction<IUserWithAccessToken>) => {
-      const { id, picture, name, email, token } = action.payload;
-      setLocalStorage({ id, picture, name, email });
-      state.id = id;
+      const { userId, picture, name, email, token, number } = action.payload;
+      setLocalStorage({ userId, picture, name, email, number });
+      state.userId = userId;
       state.picture = picture;
       state.name = name;
       state.email = email;
       state.token = token;
+      state.number = number;
     },
     updateData: (
       state,
       action: PayloadAction<Partial<IUserWithAccessToken>>
     ) => {
-      const { id, picture, name, email, token } = action.payload;
-      if (id !== undefined) state.id = id;
+      const { userId, picture, name, email, token, number } = action.payload;
+      if (userId !== undefined) state.userId = userId;
       if (picture !== undefined) state.picture = picture;
       if (name !== undefined) state.name = name;
       if (email !== undefined) state.email = email;
       if (token !== undefined) state.token = token;
+      if (number !== undefined) state.number = number;
 
       setLocalStorage({
-        id: state.id,
+        userId: state.userId,
         picture: state.picture,
         name: state.name,
         email: state.email,
+        number: state.number,
       });
     },
     clearData: (state) => {
       clearLocalStorage();
-      state.id = "";
+      state.userId = "";
       state.picture = "";
       state.name = "";
       state.email = "";
       state.token = "";
+      state.number = "";
     },
   },
 });
