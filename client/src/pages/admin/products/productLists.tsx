@@ -88,7 +88,7 @@ const ProductLists = () => {
                       key={image?.productImageId}
                       src={image.url}
                       alt={variant.color}
-                      className="w-16 h-16 object-cover"
+                      className="h-16 w-16 object-cover"
                       loading="lazy"
                     />
                   ))}
@@ -101,22 +101,22 @@ const ProductLists = () => {
               ))}
             </TableCell>
 
-            <TableCell className="flex gap-2 ">
+            <TableCell className="flex gap-2">
               <button
-                className="p-2 rounded-md bg-blue-500 text-white font-semibold text-xs"
+                className="rounded-md bg-blue-500 p-2 text-xs font-semibold text-white"
                 onClick={() =>
                   navigate(
-                    `/dashboard/products/${product.productId}/add-variant`
+                    `/dashboard/products/${product.productId}/add-variant`,
                   )
                 }
               >
                 Add variant
               </button>
               <button
-                className="p-2 rounded-md bg-blue-500 text-white font-semibold text-xs"
+                className="rounded-md bg-blue-500 p-2 text-xs font-semibold text-white"
                 onClick={() =>
                   navigate(
-                    `/dashboard/products/${product.productId}/edit-product`
+                    `/dashboard/products/${product.productId}/edit-product`,
                   )
                 }
               >

@@ -8,7 +8,11 @@ import {
   ISize,
   IVariant,
 } from "../interfaces/product.interfaces";
-import { IProductDTO, IProductPictureDTO } from "../dtos/product.dto";
+import {
+  IProductDTO,
+  IProductPictureDTO,
+  ISizeUpdateDTO,
+} from "../dtos/product.dto";
 import { productSelectFields } from "../utils/prismaSelectQueries";
 import CustomError from "../handlers/errors/customError";
 
@@ -123,6 +127,16 @@ class ProductService {
       };
     }
 
+    if (filters?.colors?.length > 0 && filters?.colors) {
+      whereClause.variants = {
+        some: {
+          color: {
+            in: filters.colors,
+          },
+        },
+      };
+    }
+
     const products = await prisma.products.findMany({
       skip: offset,
       take: limit,
@@ -155,6 +169,7 @@ class ProductService {
 
     return !!updatedItem;
   };
+
   updateProductImages = async (
     variant: IProductPictureDTO,
     files: string[]
@@ -169,9 +184,9 @@ class ProductService {
         },
       });
 
-      if (!updateImage) {
-        throw new CustomError("Deletion of the picture failed", 400);
-      }
+      // if (!updateImage) {
+      //   throw new CustomError("Deletion of the picture failed", 400);
+      // }
     }
 
     if (files.length > 0 && files) {
@@ -181,12 +196,24 @@ class ProductService {
           variantId: variant.variantId,
         })),
       });
-      if (!newImages) {
-        throw new CustomError("Addition of the picture failed", 400);
-      }
+
+      // if (!newImages) {
+      //   throw new CustomError("Addition of the picture failed", 400);
+      // }
     }
 
     return true;
+  };
+
+  updateProductSize = async (
+    { sizeId, stock }: ISizeUpdateDTO,
+    variantId: string
+  ) => {
+    const updatedSize = await prisma.productSizes.update({
+      where: { sizeId: sizeId, variantId: variantId },
+      data: { stock: stock },
+    });
+    return !!updatedSize;
   };
 }
 

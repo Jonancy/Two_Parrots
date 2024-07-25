@@ -6,12 +6,7 @@ import {
 } from "@/hooks/queries/product/product.query";
 import { cn } from "@/lib/utils";
 import { useFormik } from "formik";
-import React, {
-  ChangeEvent,
-  MouseEventHandler,
-  useEffect,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Select,
@@ -23,24 +18,19 @@ import {
 import { useGetCategory } from "@/hooks/queries/category/category.query";
 import Button from "@/components/buttons/button";
 import RadioInput from "@/components/inputs/radioInput";
-import { IProductDTO, IProductPictureUpdateDTO } from "@/dtos/product.dto";
-import { IImage, IVariant } from "@/interfaces/product.interfaces";
-import { Cross, PlusCircle } from "lucide-react";
+import {
+  IProductDTO,
+  IProductPictureUpdateDTO,
+  ISizeUpdateDTO,
+} from "@/dtos/product.dto";
+import { IVariant } from "@/interfaces/product.interfaces";
+import { Cross, Minus, Plus, PlusCircle } from "lucide-react";
+import { useUpdateProductSizeQuery } from "@/hooks/queries/product/variant/variant.query";
 
 type LayoutProps = Readonly<{
   children: React.ReactNode;
   className?: string;
 }>;
-
-type IProductGeneralUpdateDTO = {
-  name: string;
-  description: string;
-  price: number;
-  gender: string;
-  categoryId: string;
-  //   category: ICategory;
-  //   variants: { variantId: string; color: string };
-};
 
 function Layout({ children, className }: LayoutProps) {
   return (
@@ -53,6 +43,8 @@ export default function EditProducts() {
   const [addedPictures, setAddedPictures] = useState<string[]>([]);
   const [updatedPictures, setUpdatedPictures] =
     useState<IProductPictureUpdateDTO>();
+  const [selectedVariant, setSelectedVariant] = useState<number>(0);
+  const [selectedSize, setSelectedSize] = useState<ISizeUpdateDTO>();
 
   const { data, error } = useGetSpecificProductQuery(productId);
   const categoryTypes = useGetCategory();
@@ -63,6 +55,8 @@ export default function EditProducts() {
   const { mutate } = useUpdateProductQuery();
 
   const updatePicturesQuery = useUpdateProductImageQuery();
+
+  const updateSizeQuery = useUpdateProductSizeQuery();
 
   const generalFormik = useFormik<IProductDTO>({
     initialValues: {
@@ -92,7 +86,7 @@ export default function EditProducts() {
 
       const formData = new FormData();
       updatedPictures?.images.forEach((image) =>
-        formData.append("image", image?.url)
+        formData.append("image", image.url),
       );
       formData.append("variantId", values.variantId);
       formData.append("images", JSON.stringify(updatedPictures?.images));
@@ -112,12 +106,24 @@ export default function EditProducts() {
       generalFormik.setFieldValue("price", data.data.price);
       generalFormik.setFieldValue("categoryId", data.data.category.categoryId);
 
-      variantFormik.setFieldValue("color", data.data.variants[0].color);
-      variantFormik.setFieldValue("images", data.data.variants[0].images);
-      variantFormik.setFieldValue("sizes", data.data.variants[0].sizes);
-      variantFormik.setFieldValue("variantId", data.data.variants[0].variantId);
+      variantFormik.setFieldValue(
+        "color",
+        data.data.variants[selectedVariant].color,
+      );
+      variantFormik.setFieldValue(
+        "images",
+        data.data.variants[selectedVariant].images,
+      );
+      variantFormik.setFieldValue(
+        "sizes",
+        data.data.variants[selectedVariant].sizes,
+      );
+      variantFormik.setFieldValue(
+        "variantId",
+        data.data.variants[selectedVariant].variantId,
+      );
     }
-  }, [data]);
+  }, [data, selectedVariant]);
 
   console.log(generalFormik.values);
 
@@ -152,7 +158,7 @@ export default function EditProducts() {
         variantId: variantFormik.values.variantId,
         images: [
           ...(prev?.images || []),
-          { productImageId: "", url: file.target.files[0] },
+          { productImageId: "", url: file?.target?.files[0] },
         ],
       }));
       // variantFormik.setFieldValue("images", updatedPicture);
@@ -165,7 +171,7 @@ export default function EditProducts() {
     console.log(productImageId);
 
     const updatedPicture = variantFormik.values.images.filter(
-      (image) => image.productImageId != productImageId
+      (image) => image.productImageId != productImageId,
     );
     console.log(updatedPicture, "aajsjasjsj");
 
@@ -183,6 +189,50 @@ export default function EditProducts() {
   console.log(variantFormik.values.images, "jajajajajj");
 
   console.log(updatedPictures);
+
+  const handleVariantChange = (index: number) => {
+    console.log(index);
+
+    setSelectedVariant(index);
+  };
+
+  const handleSizeChange = (sizeId: string, stock: number) => {
+    setSelectedSize({ sizeId: sizeId, stock: stock });
+  };
+
+  const handleQuantityChange = (type: string) => {
+    console.log(type);
+    if (selectedSize) {
+      switch (type) {
+        case "minus":
+          if (selectedSize.stock > 0) {
+            setSelectedSize((prev) => ({
+              sizeId: prev.sizeId,
+              stock: prev.stock - 1,
+            }));
+          }
+          break;
+        case "add":
+          setSelectedSize((prev) => ({
+            sizeId: prev.sizeId,
+            stock: prev.stock + 1,
+          }));
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const submitSizeForm = () => {
+    if (selectedSize && productId) {
+      updateSizeQuery.mutate({
+        form: selectedSize,
+        variantId: variantFormik.values.variantId,
+        productId: productId,
+      });
+    }
+  };
 
   return (
     <div className="">
@@ -252,35 +302,76 @@ export default function EditProducts() {
         </div>
       </Layout>
       <Layout className="mt-4">
-        <h1>Variants </h1>
-        <div className="flex gap-2">
-          {variantFormik.values.images.map((image) => (
-            <>
+        <div className="flex justify-between">
+          <h1 className="text-xl font-semibold">Variants </h1>
+          <Button buttonName="Delete" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            {data?.data.variants.map((color, index) => (
+              <div
+                role="button"
+                onClick={() => handleVariantChange(index)}
+                key={color.variantId}
+                className="cursor-pointer rounded-full border-2 p-2"
+                style={{ backgroundColor: `${color.color}` }}
+              ></div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2">
+            <p>Sizes</p>
+            <div className="flex gap-2">
+              {variantFormik.values.sizes.map((size) => (
+                <button
+                  key={size.sizeId}
+                  className="border p-2"
+                  onClick={() => handleSizeChange(size.sizeId, size.stock)}
+                >
+                  {size.size}
+                </button>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Minus onClick={() => handleQuantityChange("minus")} />
+              <p>{selectedSize?.stock}</p>
+              <Plus onClick={() => handleQuantityChange("add")} />
+            </div>
+            <Button
+              buttonName="Save changes"
+              handleOnClick={submitSizeForm}
+              className="w-fit"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            {variantFormik.values.images.map((image) => (
+              <>
+                <img
+                  src={image.url}
+                  className="relative h-[10rem] w-[10rem] object-cover"
+                ></img>
+                <Cross
+                  onClick={() => handlePictureRemove(image?.productImageId)}
+                />
+              </>
+            ))}
+            {addedPictures.map((image) => (
               <img
-                src={image.url}
-                className="w-[10rem] h-[10rem] object-cover relative"
+                src={image}
+                className="h-[10rem] w-[10rem] object-cover"
               ></img>
-              <Cross
-                onClick={() => handlePictureRemove(image?.productImageId)}
-              />
-            </>
-          ))}
-          {addedPictures.map((image) => (
-            <img
-              src={image}
-              className="w-[10rem] h-[10rem] object-cover "
-            ></img>
-          ))}
-          <div className="">
-            <label htmlFor="image">
-              <PlusCircle className="cursor-pointer" />
-              <input
-                type="file"
-                id="image"
-                onChange={handlePictureChange}
-                hidden={true}
-              ></input>
-            </label>
+            ))}
+            <div className="">
+              <label htmlFor="image">
+                <PlusCircle className="cursor-pointer" />
+                <input
+                  type="file"
+                  id="image"
+                  onChange={handlePictureChange}
+                  hidden={true}
+                ></input>
+              </label>
+            </div>
           </div>
         </div>
         <Button

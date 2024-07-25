@@ -44,41 +44,38 @@ function Home() {
   const products = useGetAllClientProductsQuery(isEntered);
   console.log(products.error?.response);
   // const secondProducts = useGetAllClientProductsQuery(isEntered);
-
   // const customError = products?.error?.response;
 
   return (
     <div className="" ref={exampleRef}>
       {products?.isLoading ? (
-        <div className="grid grid-cols-5 mx-20 gap-6">
+        <div className="mx-20 grid grid-cols-5 gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((index) => (
             <div
-              className="flex flex-col shadow-md  cursor-pointer rounded-md"
+              className="flex cursor-pointer flex-col rounded-md shadow-md"
               key={index}
             >
-              <div className=" overflow-hidden rounded-t-md">
+              <div className="overflow-hidden rounded-t-md">
                 <LazyLoadImage
-                  className="rounded-t-md  h-[23rem] w-full object-cover hover:scale-110 duration-500 "
+                  className="h-[23rem] w-full rounded-t-md object-cover duration-500 hover:scale-110"
                   src={bill}
                   loading="lazy"
                 ></LazyLoadImage>
               </div>
               <div className="px-2 py-4">
-                <p className="font-semibold ">aha </p>
-                <p className="text-gray-400 text-sm">as</p>
-                <p className="font-semibold text-sm">NPR 22323</p>
+                <p className="font-semibold">aha </p>
+                <p className="text-sm text-gray-400">as</p>
+                <p className="text-sm font-semibold">NPR 22323</p>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-5 mx-20 gap-6">
-          {products?.data?.data?.map((product) => (
-            <ProductCard {...product} />
-          ))}
+        <div className="mx-20 grid grid-cols-5 gap-6">
+          {products?.data?.data?.map((product) => <ProductCard {...product} />)}
         </div>
       )}
-      <h1 className="text-7xl m-10">Gap</h1>
+      <h1 className="m-10 text-7xl">Gap</h1>
       {/* <div ref={exampleRef}>
         {secondProducts?.isLoading ? (
           <p>Loading data</p>

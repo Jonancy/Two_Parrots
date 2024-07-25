@@ -45,6 +45,7 @@ export interface IFilterProduct {
   filters?: {
     gender?: "Men" | "Women";
     categories?: string[];
+    colors?: string[];
   };
 }
 

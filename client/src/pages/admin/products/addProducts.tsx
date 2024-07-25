@@ -94,7 +94,7 @@ export default function AddProducts() {
         <label>
           Category:
           {category?.data?.data?.map((category) => (
-            <div className="flex gap-2 items-center" key={category.categoryId}>
+            <div className="flex items-center gap-2" key={category.categoryId}>
               <label>{category.categoryName}</label>
               <input
                 name="categoryId"
@@ -109,7 +109,7 @@ export default function AddProducts() {
 
         <button
           type="submit"
-          className={`p-2 rounded-md ${
+          className={`rounded-md p-2 ${
             isPending ? "bg-gray-500" : "bg-gray-400"
           } `}
           disabled={isPending}

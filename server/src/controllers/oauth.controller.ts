@@ -40,6 +40,7 @@ class OauthController {
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000, //For a day 24 hrs
       });
+
       res.redirect(
         `http://localhost:5000/login?googleOauth=true&user=${JSON.stringify(
           userDetails

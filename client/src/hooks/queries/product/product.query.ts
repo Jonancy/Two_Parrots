@@ -41,7 +41,7 @@ export const useGetAllAdminProductsQuery = (): UseQueryResult<
 };
 
 export const useGetAllClientProductsQuery = (
-  isEntered: boolean
+  isEntered: boolean,
 ): UseQueryResult<IApiResponse<IProduct[]>, CustomError> => {
   return useQuery({
     queryKey: ["productsClient"],
@@ -66,7 +66,7 @@ export const useAddProductQuery = () => {
 };
 
 export const useGetSpecificProductQuery = (
-  productId: string | undefined
+  productId: string | undefined,
 ): UseQueryResult<IApiResponse<IProduct>, CustomError> => {
   return useQuery({
     queryKey: ["productsClient", productId],

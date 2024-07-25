@@ -57,7 +57,8 @@ export interface IFilterProducts {
 export interface IFilterProduct {
   page: number;
   filters: {
-    gender?: string | undefined;
-    categories?: string[] | undefined;
+    gender?: string;
+    categories?: string[];
+    colors?: string[];
   };
 }

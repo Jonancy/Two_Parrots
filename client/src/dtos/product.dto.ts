@@ -1,5 +1,3 @@
-import { IImage } from "@/interfaces/product.interfaces";
-
 export interface IProductDTO {
   name: string;
   description: string;
@@ -12,3 +10,8 @@ export type IProductPictureUpdateDTO = {
   variantId: string;
   images: { productImageId?: string; url?: File | null }[];
 };
+
+export interface ISizeUpdateDTO {
+  sizeId: string;
+  stock: number;
+}

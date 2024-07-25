@@ -14,3 +14,8 @@ export interface IProductPictureDTO {
   variantId: string;
   images: { productImageId?: string; url?: File | null }[];
 }
+
+export interface ISizeUpdateDTO {
+  sizeId: string;
+  stock: number;
+}

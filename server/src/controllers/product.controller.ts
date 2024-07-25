@@ -3,11 +3,18 @@ import { productService } from "../services/product.service";
 import {
   IFilterProduct,
   IFilterTypes,
+  IProduct,
   IVariant,
 } from "../interfaces/product.interfaces";
 import { successHandler } from "../handlers/success/successHandler";
 import CustomError from "../handlers/errors/customError";
-import { IProductDTO, IProductPictureDTO } from "../dtos/product.dto";
+import {
+  IProductDTO,
+  IProductPictureDTO,
+  ISizeUpdateDTO,
+} from "../dtos/product.dto";
+import { redisClient } from "../config/redis/redis";
+// import { redisClient } from "../config/redis/redis";
 
 class ProductController {
   createProduct = async (
@@ -70,7 +77,19 @@ class ProductController {
 
   getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const products = await productService.getAllProducts();
+      let products: IProduct[];
+
+      const cachedProducts = await redisClient.get("products");
+
+      if (cachedProducts) {
+        products = JSON.parse(cachedProducts);
+      } else {
+        products = await productService.getAllProducts();
+
+        const productDetails = JSON.stringify(products);
+
+        await redisClient.setEx("products", 4000, productDetails);
+      }
 
       successHandler(res, 200, products, "All products");
     } catch (e) {
@@ -151,6 +170,7 @@ class ProductController {
       "Product has been updated successfully."
     );
   };
+
   updateProductImages = async (
     req: Request<{ productId: string }, {}, IProductPictureDTO>,
     res: Response,
@@ -191,6 +211,31 @@ class ProductController {
     } catch (e) {
       next(e);
     }
+  };
+
+  updateProductSize = async (
+    req: Request<{ variantId: string }, {}, ISizeUpdateDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const productDTO = req.body;
+    const { variantId } = req.params;
+
+    const updateProduct = await productService.updateProductSize(
+      productDTO,
+      variantId
+    );
+
+    if (!updateProduct) {
+      throw new CustomError("Updation failed", 400);
+    }
+
+    return successHandler(
+      res,
+      201,
+      null,
+      "Product has been updated successfully."
+    );
   };
 }
 

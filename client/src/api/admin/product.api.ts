@@ -1,10 +1,10 @@
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 import { privateAxiosInstance } from "../index.api";
 import { IProduct } from "@/interfaces/product.interfaces";
-import { IProductDTO } from "@/dtos/product.dto";
+import { IProductDTO, ISizeUpdateDTO } from "@/dtos/product.dto";
 
 export const addProduct = async (
-  form: IProductDTO
+  form: IProductDTO,
 ): Promise<IApiResponse<null>> => {
   return (await privateAxiosInstance.post("/admin/product/createProduct", form))
     .data;
@@ -12,7 +12,7 @@ export const addProduct = async (
 
 export const addProductVariant = async (
   form: FormData,
-  id: string | undefined
+  id: string | undefined,
 ): Promise<IApiResponse<null>> => {
   return (
     await privateAxiosInstance.post(`/admin/product/${id}/createVariant`, form)
@@ -26,28 +26,42 @@ export const getAllProducts = async (): Promise<IApiResponse<IProduct[]>> => {
 
 export const updateProduct = async (
   form: IProductDTO,
-  productId: string
+  productId: string,
 ): Promise<IApiResponse<null>> => {
   console.log(form);
 
   return (
     await privateAxiosInstance.patch(
       `/admin/product/${productId}/updateProduct`,
-      form
+      form,
     )
   ).data;
 };
 
 export const updateProductImages = async (
   form: FormData,
-  productId: string
+  productId: string,
 ): Promise<IApiResponse<null>> => {
   console.log(form);
 
   return (
     await privateAxiosInstance.patch(
       `/admin/product/${productId}/updateProductImage`,
-      form
+      form,
+    )
+  ).data;
+};
+
+export const updateProductSizes = async (
+  form: ISizeUpdateDTO,
+  variantId: string,
+): Promise<IApiResponse<null>> => {
+  console.log(form);
+
+  return (
+    await privateAxiosInstance.patch(
+      `/admin/product/${variantId}/updateProuctSize`,
+      form,
     )
   ).data;
 };

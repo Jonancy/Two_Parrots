@@ -34,3 +34,8 @@ adminProductRoutes.patch(
   handleMultipleFileUpload(["image"], "twoParrot"),
   productController.updateProductImages
 );
+
+adminProductRoutes.patch(
+  "/:variantId/updateProuctSize",
+  productController.updateProductSize
+);
