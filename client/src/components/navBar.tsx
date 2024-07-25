@@ -1,11 +1,13 @@
+import { Link } from "react-router-dom";
+
 function NavBar() {
   return (
     <div>
-      <header className="bg-white border-b-2 border-black">
-        <div className="mx-auto max-w-screen- px-4 sm:px-6 lg:px-8">
+      <header className="border-b-2 border-black bg-white">
+        <div className="max-w-screen- mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-24 items-center justify-between">
             <div className="md:flex md:items-center md:gap-12">
-              <a className="block text-teal-600" href="#">
+              <Link to="/" className="block text-teal-600">
                 <span className="sr-only">Home</span>
                 <svg
                   className="h-8"
@@ -18,7 +20,7 @@ function NavBar() {
                     fill="currentColor"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
 
             <div className="hidden md:block">

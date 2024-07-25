@@ -26,3 +26,11 @@ export interface ISize {
 export interface IImage {
   url: string | File;
 }
+
+
+export interface TProductCard{
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+}
