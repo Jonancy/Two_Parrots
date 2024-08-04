@@ -82,10 +82,47 @@ class ProductService {
     return product;
   };
 
-  getAllProducts = async (): Promise<IProduct[]> => {
-    const product = await prisma.products.findMany({
+  getProductSuggestions = async (productId: string): Promise<IProduct[]> => {
+    const product = await prisma.products.findFirst({
+      where: { productId },
+      select: { category: true },
+    });
+
+    const productSuggestions = await prisma.products.findMany({
+      where: {
+        productId: { not: productId },
+        category: { categoryName: product.category.categoryName },
+      },
+      take: 6,
       select: productSelectFields,
     });
+
+    return productSuggestions;
+  };
+
+  getAllProducts = async ({
+    filters,
+    limit = 6,
+    page = 1,
+  }: IFilterProduct): Promise<IProduct[]> => {
+    let whereClause: Prisma.ProductsWhereInput = {};
+
+    const offset = (page - 1) * limit;
+
+    if (filters?.gender != undefined) {
+      whereClause.gender = { equals: filters.gender };
+    }
+
+    const product = await prisma.products.findMany({
+      select: productSelectFields,
+      take: limit,
+      where: whereClause,
+      skip: offset,
+    });
+
+    const totalProducts = await prisma.products.count({ where: whereClause });
+
+    const totalPages = Math.ceil(totalProducts / limit);
 
     return product;
   };
@@ -106,11 +143,21 @@ class ProductService {
   getFilteredProducts = async ({
     page,
     limit,
-    filters,
+    filters = { isDeleted: "false" },
   }: IFilterProduct): Promise<IFilterProducts> => {
+    console.log(page, typeof limit);
+
+    // const pageLimit = typeof limit === "string" && parseInt(limit);
+    // console.log(typeof limit, "hasa");
+
     const offset = (page - 1) * limit;
 
-    let whereClause: Prisma.ProductsWhereInput = {};
+    let whereClause: Prisma.ProductsWhereInput = {
+      isDeleted: filters?.isDeleted === "true" ? true : false,
+    };
+
+    console.log(Boolean(filters?.isDeleted), "ajsjas");
+
     console.log(filters, "asajsjajhsajh");
 
     if (filters?.gender != undefined) {

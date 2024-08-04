@@ -1,6 +1,8 @@
 import { lazy } from "react";
 import { IRouteTypes } from "@/interfaces/routes.interfaces";
-import ProductPage from "@/pages/product/product.page";
+const ProductPage = lazy(() => import("@/pages/product/product.page"));
+const MainProfile = lazy(() => import("@/pages/client/profile/mainProfile"));
+const Home = lazy(() => import("@/pages/client/home"));
 const FilterProducts = lazy(
   () => import("@/pages/client/product/filterProducts"),
 );
@@ -9,8 +11,7 @@ const SpecificProduct = lazy(
   () => import("@/pages/client/product/specificProduct"),
 );
 const PaymentSuccess = lazy(() => import("@/pages/client/paymentSuccess"));
-const Profile = lazy(() => import("@/pages/client/profile"));
-const Home = lazy(() => import("@/pages/home/home"));
+// const Profile = lazy(() => import("@/pages/client/profile"));
 
 export const userRoutes: IRouteTypes[] = [
   {
@@ -29,7 +30,7 @@ export const userRoutes: IRouteTypes[] = [
   {
     id: "profile",
     path: "/profile/:userId",
-    element: Profile,
+    element: MainProfile,
     hasHomeLayout: true,
   },
   {
@@ -51,7 +52,7 @@ export const userRoutes: IRouteTypes[] = [
     hasHomeLayout: true,
   },
   {
-    id: "home",
+    id: "productDetails",
     path: "/product",
     element: ProductPage,
     hasHomeLayout: true,

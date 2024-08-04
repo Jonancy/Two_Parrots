@@ -24,5 +24,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <Toaster />
     </Provider>
     <ReactQueryDevtools />
-  </QueryClientProvider>
+  </QueryClientProvider>,
 );

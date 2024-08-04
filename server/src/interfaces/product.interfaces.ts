@@ -41,11 +41,12 @@ export interface IFilterTypes {
 
 export interface IFilterProduct {
   page: number;
-  limit: number;
+  limit?: number;
   filters?: {
     gender?: "Men" | "Women";
     categories?: string[];
     colors?: string[];
+    isDeleted?: string;
   };
 }
 

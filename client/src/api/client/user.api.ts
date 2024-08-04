@@ -1,28 +1,39 @@
-// // import { url } from "../index.service";
+import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
+import { axiosInstance, privateAxiosInstance } from "../index.api";
+import { IOrderTableDetails } from "@/interfaces/order.interfaces";
+import { IUserState } from "@/interfaces/user.interfaces";
+import { IPasswordChangeDTO } from "@/dtos/user.dto";
 
-import { axiosInstance } from "../index.api";
-
-// import { IOrderDTO } from "@/interfaces/order.interfaces";
-// import { url } from "../index.service";
-
-// // export const getProfileDetails = (id: string) => {
-// //   return url.get(`/user/getUserWithMusic/${id}`);
-// // };
-
-// // export const getSideBarArtists = (queryName: string | null) => {
-// //   //!the first string is the key and the second is the value and it is denoted by K and T
-// //   //! So if the queryParams is not null then the queryName or the params will append it
-// //   const params: Record<string, string | null> = {};
-// //   if (queryName) {
-// //     params.queryName = queryName;
-// //   }
-// //   return url.get(`/user/getSideBarArtists`, { params });
-// // };
-
-// export const orderProduct = (data: IOrderDTO) => {
-//   return url.post(`/user/orders/createOrder`, data);
-// };
+export const getUserProfileDetails = async (userId: string | undefined) => {
+  return (await privateAxiosInstance.get(`/user/profile/${userId}`)).data;
+};
 
 export const specificUser = (id: string) => {
   return axiosInstance.get(`/user/getSpecificUser/${id}`);
+};
+
+export const specificUsersOrders = async (
+  userId: string | undefined,
+): Promise<IApiResponse<IOrderTableDetails[] | []>> => {
+  return (
+    await privateAxiosInstance.get(`/user/order/${userId}/getAllOrderDetails`)
+  ).data;
+};
+
+export const updateUserGeneralDetails = async (
+  userDetails: IUserState,
+  id: string,
+): Promise<IApiResponse<null>> => {
+  return (
+    await privateAxiosInstance.patch(`/user/updateUser/${id}`, userDetails)
+  ).data;
+};
+
+export const updateUserPasswordDetails = async (
+  userDetails: IPasswordChangeDTO,
+  id: string,
+): Promise<IApiResponse<null>> => {
+  return (
+    await privateAxiosInstance.patch(`/user/updateUserPass/${id}`, userDetails)
+  ).data;
 };

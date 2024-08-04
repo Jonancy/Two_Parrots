@@ -7,17 +7,18 @@ const TextInput: React.FC<IFormInputProps> = ({
   type,
   formik,
   className,
+  isDisabled,
 }) => {
   const isError = formik.touched[name] && formik.errors[name];
 
   return (
-    <div className="flex flex-col gap-1 h-[4rem] ">
+    <div className="flex h-[4rem] flex-col gap-1">
       <input
         className={cn(
-          ` rounded-md p-2 border focus:outline-black ${
+          `rounded-md border p-2 focus:outline-black ${
             isError ? "border-red-500" : ""
           }`,
-          className
+          className,
         )}
         name={name}
         id={name}
@@ -26,9 +27,10 @@ const TextInput: React.FC<IFormInputProps> = ({
         value={formik.values[name]}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
+        disabled={isDisabled}
       ></input>
       {isError && (
-        <div className="text-red-500 text-xs">
+        <div className="text-xs text-red-500">
           {String(formik.errors[name])}
         </div>
       )}

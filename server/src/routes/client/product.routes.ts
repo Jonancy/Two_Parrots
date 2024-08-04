@@ -10,6 +10,11 @@ userProductRoutes.get(
   productController.getSpecificProduct
 );
 
+userProductRoutes.get(
+  "/specificProduct/productSuggestions/:productId",
+  productController.getSpecificProductsSuggestions
+);
+
 userProductRoutes.get("/filterTypes", productController.getFilterTypes);
 
 userProductRoutes.get("/filterProducts", productController.getFilteredProducts);

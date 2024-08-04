@@ -6,6 +6,7 @@ export interface IFormInputProps {
   placeholder: string;
   formik: FormikProps<any>;
   className?: string;
+  isDisabled?: boolean;
 }
 
 export interface IRadioInputProps {

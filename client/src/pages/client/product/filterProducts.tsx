@@ -51,6 +51,7 @@ export default function FilterProducts() {
     gender?: string;
     categories?: string[];
     colors?: string[];
+    isDeleted?: boolean;
   }>();
 
   const navigate = useNavigate();

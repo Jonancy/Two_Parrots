@@ -28,3 +28,42 @@ export const productSelectFields = {
     },
   },
 };
+
+export const orderSelectFields = {
+  orderId: true,
+  status: true,
+  totalPrice: true,
+  userName: true,
+  email: true,
+  createdAt: true,
+  orderItems: {
+    select: {
+      orderItemId: true,
+      price: true,
+      createdAt: true,
+      quantity: true,
+      product: true,
+      size: true,
+      variant: true,
+      orderId: true,
+    },
+  },
+};
+
+export const tableOrderSelectFields = {
+  orderId: true,
+  location: true,
+  status: true,
+  createdAt: true,
+  paymentMethod: true,
+  totalPrice: true,
+  phoneNumber: true,
+  orderItems: {
+    select: {
+      quantity: true,
+      product: { select: { gender: true } },
+      variant: { select: { images: { select: { url: true } } } },
+      size: { select: { size: true } },
+    },
+  },
+};

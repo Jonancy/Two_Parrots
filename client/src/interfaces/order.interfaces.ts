@@ -1,4 +1,3 @@
-import { IEsewaDecodeResponse } from "./esewa.interfaces";
 export interface IOrderItemsDTO {
   productId: string;
   variantId: string;
@@ -31,4 +30,28 @@ export interface IOrderPaymentValidation {
   location: string;
   phoneNumber: string;
   paymentMethod: string;
+}
+
+export interface IOrderTableDetails {
+  orderId: string;
+  status: string;
+  paymentMethod: string;
+  totalPrice: number;
+  phoneNumber: number;
+  location: string;
+  createdAt: Date;
+  orderItems: {
+    quantity: number;
+    product: {
+      gender: string;
+    };
+    variant: {
+      images: {
+        url: string;
+      }[];
+    };
+    size: {
+      size: string;
+    };
+  }[];
 }

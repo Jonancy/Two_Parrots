@@ -1,7 +1,15 @@
 import { Orders, OrderStatus, PaymentMethod } from "@prisma/client";
 import { prisma } from "../..";
-import { IOrderDTO, IOrderStatusUpdate } from "../interfaces/order.interfaces";
-import { userSelectFields } from "../utils/prismaSelectQueries";
+import {
+  IOrderDTO,
+  IOrderStatusUpdate,
+  IOrderTableDetails,
+} from "../interfaces/order.interfaces";
+import {
+  orderSelectFields,
+  tableOrderSelectFields,
+  userSelectFields,
+} from "../utils/prismaSelectQueries";
 
 class OrderService {
   createOrder = async (orderInput: IOrderDTO) => {
@@ -30,27 +38,19 @@ class OrderService {
 
   getAllOrders = async () => {
     const orders = await prisma.orders.findMany({
-      select: {
-        orderId: true,
-        status: true,
-        totalPrice: true,
-        userName: true,
-        email: true,
-        createdAt: true,
-        orderItems: {
-          select: {
-            orderItemId: true,
-            price: true,
-            createdAt: true,
-            quantity: true,
-            product: true,
-            size: true,
-            variant: true,
-            orderId: true,
-          },
-        },
-      },
+      select: orderSelectFields,
     });
+    return orders;
+  };
+
+  getSpecificUsersOrders = async (
+    email: string
+  ): Promise<IOrderTableDetails[] | []> => {
+    const orders = await prisma.orders.findMany({
+      where: { email },
+      select: tableOrderSelectFields,
+    });
+
     return orders;
   };
 

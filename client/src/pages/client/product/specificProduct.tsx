@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 import Button from "@/components/buttons/button";
-import SelectInput from "@/components/inputs/selectInput";
+// import SelectInput from "@/components/inputs/selectInput";
 import {
   ICartItem,
   IProduct,
@@ -13,15 +13,32 @@ import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { useDispatch } from "react-redux";
 import { addItem } from "@/redux/slice/cartSlice";
-import { useGetSpecificProductQuery } from "@/hooks/queries/product/product.query";
+import {
+  useGetProductSuggestionsQuery,
+  useGetSpecificProductQuery,
+} from "@/hooks/queries/product/product.query";
 import { SetAddToCartNoti } from "@/helpers/addToCartNoti-helper";
 import { toast } from "@/components/ui/use-toast";
+import { ProductDisplay } from "../home";
+import useIntersectionObserver from "@/hooks/useIntersection";
 
 export default function SpecificProduct() {
   const { productId } = useParams();
   const dispatch = useDispatch();
 
   const { data, error } = useGetSpecificProductQuery(productId);
+
+  const { ref, isIntersecting } = useIntersectionObserver();
+
+  console.log(isIntersecting);
+
+  const productSuggestions = useGetProductSuggestionsQuery(
+    productId,
+    isIntersecting,
+  );
+
+  console.log(productSuggestions);
+
   const product = data?.data;
 
   const [selectedSize, setSelectedSize] = useState<ISize>();
@@ -103,7 +120,7 @@ export default function SpecificProduct() {
             {selectedVariant?.images?.map((pic) => (
               <img
                 key={pic.productImageId}
-                className="w-[8rem] h-[7rem] object-cover cursor-pointer"
+                className="h-[7rem] w-[8rem] cursor-pointer object-cover"
                 alt="pic"
                 src={pic.url}
                 onClick={() => setMainPicture(pic.url)}
@@ -112,7 +129,7 @@ export default function SpecificProduct() {
           </div>
           <Zoom>
             <img
-              className="w-[32rem] h-[44rem] object-cover"
+              className="h-[44rem] w-[32rem] object-cover"
               src={mainPicture}
               alt="Main product"
             />
@@ -123,7 +140,7 @@ export default function SpecificProduct() {
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl font-bold">{product?.name}</h1>
               <p className="text-sm font-semibold">{product?.description}</p>
-              <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-4">
                 <div className="flex gap-2">
                   <FaStar className="text-xl" />
                   <FaStar className="text-xl" />
@@ -141,18 +158,18 @@ export default function SpecificProduct() {
                   {product?.variants?.map((color, index) => (
                     <div
                       key={color.variantId}
-                      className="flex gap-1 items-center p-2 rounded-md bg-slate-200  w-fit cursor-pointer"
+                      className="flex w-fit cursor-pointer items-center gap-1 rounded-md bg-slate-200 p-2"
                       onClick={() => handleVariantChange(index)}
                     >
                       <input
                         type="radio"
-                        className="accent-black cursor-pointer w-[1rem] h-[1rem]"
+                        className="h-[1rem] w-[1rem] cursor-pointer accent-black"
                         name={color.color}
                         checked={index === variantIndex}
                       ></input>
                       <label
                         htmlFor={color.color}
-                        className="cursor-pointer font-semibold text-sm"
+                        className="cursor-pointer text-sm font-semibold"
                       >
                         {color.color}
                       </label>
@@ -166,18 +183,18 @@ export default function SpecificProduct() {
                   {selectedVariant?.sizes.map((size, index) => (
                     <div
                       key={size.sizeId}
-                      className="flex gap-1 items-center p-2 rounded-md bg-slate-200  w-fit cursor-pointer"
+                      className="flex w-fit cursor-pointer items-center gap-1 rounded-md bg-slate-200 p-2"
                       onClick={() => handleSizeChange(index)}
                     >
                       <input
                         type="radio"
-                        className="accent-black cursor-pointer w-[1rem] h-[1rem]"
+                        className="h-[1rem] w-[1rem] cursor-pointer accent-black"
                         name={size.size}
                         checked={index === sizeIndex}
                       ></input>
                       <label
                         htmlFor={size.size}
-                        className="cursor-pointer font-semibold text-sm"
+                        className="cursor-pointer text-sm font-semibold"
                       >
                         {size.size}
                       </label>
@@ -190,7 +207,7 @@ export default function SpecificProduct() {
                 <div className="flex gap-2">
                   {/* <SelectInput /> */}
                   <select
-                    className="p-2 px-4 border rounded-md"
+                    className="rounded-md border p-2 px-4"
                     name="quantity"
                     onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
                   >
@@ -207,11 +224,17 @@ export default function SpecificProduct() {
           </div>
           <div className="mt-6">
             <h1 className="text-xl font-semibold">Rules</h1>
-            <p className="text-gray-500 font-semibold text-sm">
+            <p className="text-sm font-semibold text-gray-500">
               No return hai mula haru
             </p>
           </div>
         </div>
+      </div>
+      <div ref={ref}>
+        <ProductDisplay
+          isLoading={productSuggestions.isLoading}
+          products={productSuggestions.data?.data}
+        />
       </div>
     </div>
   );

@@ -19,3 +19,16 @@ export interface UserLoginDTO {
   email: string;
   password: string;
 }
+
+export interface IUpdateUserDetailsDTO {
+  name: string;
+  email: string;
+  location: string;
+  phoneNumber?: string;
+}
+
+export interface IUpdateUserPasswordDTO {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

@@ -21,7 +21,7 @@ adminProductRoutes.post(
   productController.createProductVariants
 );
 
-adminProductRoutes.get("/getProducts", productController.getAllProducts);
+adminProductRoutes.get("/getProducts", productController.getFilteredProducts);
 
 adminProductRoutes.patch(
   "/:productId/updateProduct",

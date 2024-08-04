@@ -1,4 +1,4 @@
-import { OrderStatus, PaymentMethod } from "@prisma/client";
+import { Gender, OrderStatus, PaymentMethod } from "@prisma/client";
 
 export interface IOrderItemDTO {
   productId: string;
@@ -23,4 +23,28 @@ export interface IOrderStatusUpdate {
   orderId: string;
   pidx: string;
   paymentMethod: PaymentMethod;
+}
+
+export interface IOrderTableDetails {
+  orderId: string;
+  status: OrderStatus;
+  paymentMethod: PaymentMethod;
+  totalPrice: number;
+  phoneNumber: number;
+  location: string;
+  createdAt: Date;
+  orderItems: {
+    quantity: number;
+    product: {
+      gender: Gender;
+    };
+    variant: {
+      images: {
+        url: string;
+      }[];
+    };
+    size: {
+      size: string;
+    };
+  }[];
 }

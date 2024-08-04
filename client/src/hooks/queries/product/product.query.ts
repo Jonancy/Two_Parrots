@@ -8,6 +8,7 @@ import {
   getAllProductClient,
   getFilterProductClient,
   getFilterTypes,
+  getProductSuggestions,
   getSpecificProductClient,
 } from "@/api/client/product.api";
 import { toast } from "@/components/ui/use-toast";
@@ -29,23 +30,27 @@ import {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-export const useGetAllAdminProductsQuery = (): UseQueryResult<
-  IApiResponse<IProduct[]>,
-  CustomError
-> => {
+export const useGetAllAdminProductsQuery = (
+  filters: IFilterProduct,
+): UseQueryResult<IApiResponse<IFilterProducts>, CustomError> => {
   return useQuery({
     queryKey: [QUERY_PRODUCTS_KEY],
-    queryFn: getAllProducts,
+    queryFn: () => getAllProducts(filters),
     retry: 0,
   });
 };
 
-export const useGetAllClientProductsQuery = (
-  isEntered: boolean,
-): UseQueryResult<IApiResponse<IProduct[]>, CustomError> => {
+export const useGetAllClientProductsQuery = ({
+  isEntered,
+  filters,
+}: IFilterProduct & { isEntered: boolean }): UseQueryResult<
+  IApiResponse<IProduct[]>,
+  CustomError
+> => {
   return useQuery({
-    queryKey: ["productsClient"],
-    queryFn: getAllProductClient,
+    queryKey: ["productsClient", filters],
+
+    queryFn: () => getAllProductClient(filters),
     enabled: isEntered,
     retry: 0,
     // staleTime: 1000000,
@@ -72,6 +77,18 @@ export const useGetSpecificProductQuery = (
     queryKey: ["productsClient", productId],
     queryFn: () => getSpecificProductClient(productId),
     retry: 0,
+  });
+};
+
+export const useGetProductSuggestionsQuery = (
+  productId: string | undefined,
+  isEntered: boolean,
+): UseQueryResult<IApiResponse<IProduct[]>, CustomError> => {
+  return useQuery({
+    queryKey: ["productSuggestions", productId],
+    queryFn: () => getProductSuggestions(productId),
+    retry: 2,
+    enabled: isEntered,
   });
 };
 

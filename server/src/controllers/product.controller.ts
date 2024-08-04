@@ -13,7 +13,7 @@ import {
   IProductPictureDTO,
   ISizeUpdateDTO,
 } from "../dtos/product.dto";
-// import { redisClient } from "../config/redis/redis";
+import { redisClient } from "../config/redis/redis";
 
 class ProductController {
   createProduct = async (
@@ -74,21 +74,28 @@ class ProductController {
     }
   };
 
-  getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+  getAllProducts = async (
+    req: Request<{}, {}, {}, IFilterProduct>,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
+      const filters = req.query;
+
       let products: IProduct[];
+      const cacheKey = `products:${JSON.stringify(filters.filters)}`;
 
-      // const cachedProducts = await redisClient.get("products");
+      const cachedProducts = await redisClient.get(cacheKey);
 
-      // if (cachedProducts) {
-      //   products = JSON.parse(cachedProducts);
-      // } else {
-      products = await productService.getAllProducts();
+      if (cachedProducts) {
+        products = JSON.parse(cachedProducts);
+      } else {
+        products = await productService.getAllProducts(req.query);
 
-      // const productDetails = JSON.stringify(products);
+        const productDetails = JSON.stringify(products);
 
-      // await redisClient.setEx("products", 4000, productDetails);
-      // }
+        await redisClient.setEx(cacheKey, 400, productDetails);
+      }
 
       successHandler(res, 200, products, "All products");
     } catch (e) {
@@ -115,6 +122,26 @@ class ProductController {
     }
   };
 
+  getSpecificProductsSuggestions = async (
+    req: Request<{ productId: string }>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const productId = req.params.productId;
+
+      const product = await productService.getProductSuggestions(productId);
+
+      // if (!product) {
+      //   throw new CustomError("No product found", 404);
+      // }
+
+      successHandler(res, 200, product, "Product suggestions");
+    } catch (e) {
+      next(e);
+    }
+  };
+
   getFilterTypes = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const filterTypes: IFilterTypes = await productService.getFilterTypes();
@@ -132,6 +159,8 @@ class ProductController {
   ) => {
     try {
       const { page = 1, limit = 6, filters } = req.query;
+
+      console.log(req.query);
 
       const products = await productService.getFilteredProducts({
         page,
@@ -179,7 +208,7 @@ class ProductController {
       const variantDTO = req.body;
       const productId = req.params.productId;
       const files = req.images;
-      // console.log(variantDTO, "asas");
+
       console.log(req.body, "aas");
       console.log(files, "lol");
 

@@ -87,9 +87,13 @@ class OrderController {
     next: NextFunction
   ) => {
     try {
-      const allOrders = await orderService.getAllOrders();
+      const userDetails = req.user;
 
-      successHandler(res, 200, allOrders, "All orders");
+      const allOrders = await orderService.getSpecificUsersOrders(
+        userDetails.email
+      );
+
+      successHandler(res, 200, allOrders, "All orders details of user");
     } catch (e) {
       next(e);
     }

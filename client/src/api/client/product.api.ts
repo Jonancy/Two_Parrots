@@ -7,15 +7,18 @@ import {
 import { axiosInstance } from "../index.api";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 
-export const getAllProductClient = async (): Promise<
-  IApiResponse<IProduct[]>
-> => {
-  return (await axiosInstance.get("/user/product/getProducts")).data;
-  // return handleError(e as AxiosError);
+export const getAllProductClient = async (
+  filters: IFilterProduct | undefined,
+): Promise<IApiResponse<IProduct[]>> => {
+  return (
+    await axiosInstance.get("/user/product/getProducts", {
+      params: { filters },
+    })
+  ).data;
 };
 
 export const getSpecificProductClient = async (
-  productId: string | undefined
+  productId: string | undefined,
 ): Promise<IApiResponse<IProduct>> => {
   return (await axiosInstance.get(`/user/product/specificProduct/${productId}`))
     .data;
@@ -35,4 +38,14 @@ export const getFilterProductClient = async ({
     })
   ).data;
   // return handleError(e as AxiosError);
+};
+
+export const getProductSuggestions = async (
+  productId: string | undefined,
+): Promise<IApiResponse<IProduct[]>> => {
+  return (
+    await axiosInstance.get(
+      `/user/product/specificProduct/productSuggestions/${productId}`,
+    )
+  ).data;
 };

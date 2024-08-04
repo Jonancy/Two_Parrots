@@ -6,7 +6,4 @@ export const userOrderRoutes = Router();
 userOrderRoutes.post("/createOrder", orderController.createOrder);
 userOrderRoutes.post("/payment", orderController.finalPayment);
 
-userOrderRoutes.get(
-  "/order/getAllOrderDetails",
-  orderController.getAllOrderDetails
-);
+userOrderRoutes.get("/getAllOrderDetails", orderController.getAllOrderDetails);

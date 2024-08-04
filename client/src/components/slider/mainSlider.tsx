@@ -1,57 +1,21 @@
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import SwiperCore from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
-
-import product1 from "../assets/p1.jpeg";
-import product2 from "../assets/p2.jpeg";
-import product3 from "../assets/p3.jpeg";
-import ProductCard from "./product/card";
-import { useRef } from "react";
+import React, { useRef } from "react";
 
 SwiperCore.use([Navigation]);
 
-function ProductGrid({ title }: { title: string }) {
+function MainSlider({
+  children,
+  title,
+}: {
+  children: React.ReactNode;
+  title?: string;
+}) {
   const swiperRef = useRef<SwiperCore>();
-  const products = [
-    {
-      id: "1",
-      name: "Fluffy Blue Balacalava Hoodie",
-      price: 4950,
-      image: product1,
-    },
-    {
-      id: "2",
-      name: "Ivy Gold Fur Jacket",
-      price: 4150,
-      image: product2,
-    },
-    {
-      id: "3",
-      name: "Ritzy Vintage Hoodie",
-      price: 3100,
-      image: product3,
-    },
-    {
-      id: "4",
-      name: "Fluffy Gray Balacalava Hoodie",
-      price: 4950,
-      image: product1,
-    },
-    {
-      id: "5",
-      name: "Ivy Silver Fur Jacket",
-      price: 4150,
-      image: product2,
-    },
-    {
-      id: "6",
-      name: "Ritzy Vintage",
-      price: 3100,
-      image: product3,
-    },
-  ];
+  console.log(children);
 
   return (
     <div className="relative mx-32">
@@ -71,16 +35,7 @@ function ProductGrid({ title }: { title: string }) {
         }}
         className={`delay-[300ms] duration-[600ms] taos:translate-y-[-200px] taos:opacity-0 mySwiper mt-10 grid grid-cols-6 justify-center gap-3 overflow-hidden`}
       >
-        {/* {products.map((product) => (
-          <SwiperSlide key={product.id} className="group relative p-5">
-            <ProductCard
-              id={product.id}
-              name={product.name}
-              image={product.image}
-              price={product.price}
-            />
-          </SwiperSlide>
-        ))} */}
+        {children}
       </Swiper>
       <div
         className="swiper-button-preva bg- absolute -left-10 top-1/2 z-10 cursor-pointer select-none bg-opacity-30"
@@ -98,4 +53,4 @@ function ProductGrid({ title }: { title: string }) {
   );
 }
 
-export default ProductGrid;
+export default MainSlider;

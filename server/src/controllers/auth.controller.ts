@@ -116,6 +116,7 @@ class AuthController {
   ) => {
     try {
       const refreshToken = req.cookies.token;
+
       if (!refreshToken) {
         throw new CustomError("No refresh token received", 401);
       }

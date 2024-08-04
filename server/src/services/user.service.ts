@@ -1,5 +1,9 @@
 import { Users } from "@prisma/client";
-import { UserRegisterDTO, UserServiceRegisterDTO } from "../dtos/user.dto";
+import {
+  IUpdateUserDetailsDTO,
+  UserRegisterDTO,
+  UserServiceRegisterDTO,
+} from "../dtos/user.dto";
 import { prisma } from "../..";
 import { IUserDetails } from "../interfaces/user.interfaces";
 
@@ -45,6 +49,28 @@ class UserService {
     const user = await prisma.users.findFirst({ where: { email: email } });
 
     return user;
+  };
+
+  updateUser = async (user: IUpdateUserDetailsDTO, userId: string) => {
+    console.log(userId);
+
+    const updateUser = await prisma.users.update({
+      where: { userId: userId },
+      data: { ...user },
+    });
+
+    return !!updateUser;
+  };
+
+  updateUserPassword = async (password: string, userId: string) => {
+    console.log(userId);
+
+    const updateUser = await prisma.users.update({
+      where: { userId: userId },
+      data: { password },
+    });
+
+    return !!updateUser;
   };
 }
 

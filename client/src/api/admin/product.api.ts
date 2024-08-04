@@ -1,6 +1,9 @@
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 import { privateAxiosInstance } from "../index.api";
-import { IProduct } from "@/interfaces/product.interfaces";
+import {
+  IFilterProduct,
+  IFilterProducts,
+} from "@/interfaces/product.interfaces";
 import { IProductDTO, ISizeUpdateDTO } from "@/dtos/product.dto";
 
 export const addProduct = async (
@@ -19,8 +22,14 @@ export const addProductVariant = async (
   ).data;
 };
 
-export const getAllProducts = async (): Promise<IApiResponse<IProduct[]>> => {
-  return (await privateAxiosInstance.get("/admin/product/getProducts")).data;
+export const getAllProducts = async (
+  filters: IFilterProduct,
+): Promise<IApiResponse<IFilterProducts>> => {
+  return (
+    await privateAxiosInstance.get("/admin/product/getProducts", {
+      params: filters,
+    })
+  ).data;
   // return handleError(e as AxiosError);
 };
 

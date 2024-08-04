@@ -48,23 +48,26 @@ export interface IFilterTypes {
   categories: string[];
 }
 
+//!For res purposes
 export interface IFilterProducts {
   products: IProduct[];
   totalPages: number;
   currentPage: number;
 }
 
+//!For req purposes
 export interface IFilterProduct {
-  page: number;
-  filters: {
+  page?: number;
+  limit?: number;
+  filters?: {
     gender?: string;
     categories?: string[];
     colors?: string[];
+    isDeleted?: boolean;
   };
 }
 
-
-export interface TProductCard{
+export interface TProductCard {
   id: string;
   name: string;
   image: string;

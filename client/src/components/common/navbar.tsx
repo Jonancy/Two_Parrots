@@ -46,9 +46,9 @@ export default function Navbar() {
     }
   };
   return (
-    <div className=" px-20 py-4 flex justify-between items-center bg-white z-50 sticky top-0 border-b">
-      <div className="w-[8rem] h-[4rem] ">
-        <img className="w-full h-full object-cover" src={bill}></img>
+    <div className="sticky top-0 z-50 flex items-center justify-between border-b bg-white px-20 py-4">
+      <div className="h-[4rem] w-[8rem]">
+        <img className="h-full w-full object-cover" src={bill}></img>
       </div>
       <NavigationMenu>
         <NavigationMenuList>
@@ -64,17 +64,17 @@ export default function Navbar() {
           ))}
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="w-[15rem] items-center flex justify-end">
-        <div className="flex gap-4 items-center text-2xl  ">
+      <div className="flex w-[15rem] items-center justify-end">
+        <div className="flex items-center gap-4 text-2xl">
           {/* <Search /> */}
           <FaUser onClick={handleNavigate} className="cursor-pointer" />
           <SideCart />
-          <form action="" className="relative ">
+          <form action="" className="relative">
             <input
               type="search"
               placeholder="Search clothes"
               // onChange={debounceOnChange}
-              className="peer cursor-pointer relative z-10 h-10 w-6  rounded-full bg-transparent text-sm font-semibold  pl-10 outline-none transition-all duration-300 ease-in-out focus:w-full focus:border focus:cursor-text focus:border-neutral-700 focus:pl-14 focus:pr-2"
+              className="peer relative z-10 h-10 w-6 cursor-pointer rounded-full bg-transparent pl-10 text-sm font-semibold outline-none transition-all duration-300 ease-in-out focus:w-full focus:cursor-text focus:border focus:border-neutral-700 focus:pl-14 focus:pr-2"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
