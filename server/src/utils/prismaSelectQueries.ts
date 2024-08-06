@@ -27,6 +27,28 @@ export const productSelectFields = {
       sizes: { select: { sizeId: true, size: true, stock: true } },
     },
   },
+  wishlist: {
+    select: {
+      userId: true,
+    },
+  },
+};
+
+export const productMiniSelectFields = {
+  productId: true,
+  name: true,
+  gender: true,
+  price: true,
+  category: {
+    select: { categoryId: true, categoryName: true },
+  },
+  variants: {
+    select: {
+      variantId: true,
+      color: true,
+      images: { select: { productImageId: true, url: true } },
+    },
+  },
 };
 
 export const orderSelectFields = {

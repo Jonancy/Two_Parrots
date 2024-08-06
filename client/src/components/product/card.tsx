@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { IProduct } from "@/interfaces/product.interfaces";
+import { IMiniProduct } from "@/interfaces/product.interfaces";
 import { StarIcon } from "lucide-react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link } from "react-router-dom";
 
-const ProductCard: React.FC<IProduct> = ({
+const ProductCard: React.FC<IMiniProduct> = ({
   productId,
   name,
   variants,

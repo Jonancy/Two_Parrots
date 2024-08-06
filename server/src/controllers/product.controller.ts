@@ -3,6 +3,7 @@ import { productService } from "../services/product.service";
 import {
   IFilterProduct,
   IFilterTypes,
+  IMiniProduct,
   IProduct,
   IVariant,
 } from "../interfaces/product.interfaces";
@@ -11,6 +12,7 @@ import CustomError from "../handlers/errors/customError";
 import {
   IProductDTO,
   IProductPictureDTO,
+  IProductReviewDTO,
   ISizeUpdateDTO,
 } from "../dtos/product.dto";
 import { redisClient } from "../config/redis/redis";
@@ -82,7 +84,7 @@ class ProductController {
     try {
       const filters = req.query;
 
-      let products: IProduct[];
+      let products: IMiniProduct[];
       const cacheKey = `products:${JSON.stringify(filters.filters)}`;
 
       const cachedProducts = await redisClient.get(cacheKey);
@@ -117,6 +119,27 @@ class ProductController {
       }
 
       successHandler(res, 200, product, "Required product");
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getSpecificProductReviews = async (
+    req: Request<{ productId: string }>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const productId = req.params.productId;
+      const productReviews = await productService.getSpecificProductReviews(
+        productId
+      );
+
+      // if (!product) {
+      //   throw new CustomError("No product found", 404);
+      // }
+
+      successHandler(res, 200, productReviews, "Product reviews");
     } catch (e) {
       next(e);
     }
@@ -214,7 +237,6 @@ class ProductController {
 
       let image: { productImageId?: string; url?: File | null }[] =
         typeof variantDTO.images === "string" && JSON.parse(variantDTO.images);
-      // const convertedImages = JSON.parse(variantDTO?.images);
       console.log(image);
 
       const deletedImages = image?.filter(
@@ -226,17 +248,12 @@ class ProductController {
         images: deletedImages,
       };
 
-      const updatedImages = await productService.updateProductImages(
-        images,
-        files
-      );
-
-      if (!updatedImages) {
-        throw new CustomError("Not Updated", 400);
-      }
+      await productService.updateProductImages(images, files);
 
       successHandler(res, 201, null, "Pass");
     } catch (e) {
+      // console.log(e, "eheheh");
+
       next(e);
     }
   };
@@ -246,24 +263,148 @@ class ProductController {
     res: Response,
     next: NextFunction
   ) => {
-    const productDTO = req.body;
-    const { variantId } = req.params;
+    try {
+      const productDTO = req.body;
+      const { variantId } = req.params;
 
-    const updateProduct = await productService.updateProductSize(
-      productDTO,
-      variantId
-    );
+      const updateProduct = await productService.updateProductSize(
+        productDTO,
+        variantId
+      );
 
-    if (!updateProduct) {
-      throw new CustomError("Updation failed", 400);
+      if (!updateProduct) {
+        throw new CustomError("Updation failed", 400);
+      }
+
+      return successHandler(
+        res,
+        201,
+        null,
+        "Product has been updated successfully."
+      );
+    } catch (e) {
+      next(e);
     }
+  };
 
-    return successHandler(
-      res,
-      201,
-      null,
-      "Product has been updated successfully."
-    );
+  softDeleteProduct = async (
+    req: Request<{ productId: string }, {}, ISizeUpdateDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const productId = req.params.productId;
+
+      const updatedProduct = await productService.softDeleteProduct(productId);
+
+      if (!updatedProduct) {
+        throw new CustomError("Updation failed", 400);
+      }
+
+      return successHandler(
+        res,
+        201,
+        null,
+        "Product has been updated successfully."
+      );
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  productWishlist = async (
+    req: Request<{ productId: string; userId: string }>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { productId, userId } = req.params;
+      const previousWishlist = await productService.checkProductWishList(
+        productId,
+        userId
+      );
+
+      if (previousWishlist) {
+        const deleteWishList = await productService.deleteProductWishList(
+          productId,
+          userId
+        );
+
+        if (!deleteWishList) {
+          throw new CustomError("Failed to remove product from wishlist", 400);
+        }
+        return successHandler(
+          res,
+          201,
+          null,
+          "Product successfully removed from your wishlist"
+        );
+      } else {
+        const addWishList = await productService.addProductWishList(
+          productId,
+          userId
+        );
+
+        if (!addWishList) {
+          throw new CustomError("Failed to add product to wishlist", 400);
+        }
+
+        return successHandler(
+          res,
+          201,
+          null,
+          "Product successfully added to your wishlist"
+        );
+      }
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  addProductReviews = async (
+    req: Request<{ productId: string; userId: string }, {}, IProductReviewDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { productId, userId } = req.params;
+      const reviewDTO = req.body;
+
+      const addReview = await productService.addProductReviews(
+        productId,
+        userId,
+        reviewDTO
+      );
+
+      if (!addReview) {
+        throw new CustomError("Addition of review failed", 400);
+      }
+
+      return successHandler(
+        res,
+        201,
+        null,
+        "Review has been posted successfully."
+      );
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  getUsersWishlist = async (
+    req: Request<{ userId: string }, {}, IProductReviewDTO>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userId = req.params.userId;
+
+      const wishLists = await productService.getWishlist(userId);
+
+      return successHandler(res, 200, wishLists, "Wishlist of user .");
+    } catch (e) {
+      next(e);
+    }
   };
 }
 

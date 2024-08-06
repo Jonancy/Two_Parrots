@@ -19,3 +19,8 @@ export interface ISizeUpdateDTO {
   sizeId: string;
   stock: number;
 }
+
+export interface IProductReviewDTO {
+  comment: string;
+  rating: number;
+}

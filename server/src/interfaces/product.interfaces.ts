@@ -47,11 +47,46 @@ export interface IFilterProduct {
     categories?: string[];
     colors?: string[];
     isDeleted?: string;
+    searchName?: string;
   };
 }
 
 export interface IFilterProducts {
-  products: IProduct[];
+  products: IMiniProduct[];
   totalPages: number;
   currentPage: number;
+}
+export interface IProductReviews {
+  reviewId: string;
+  comment: string;
+  createdAt: Date;
+  user: {
+    name: string;
+    userId: string;
+    picture: string;
+  };
+}
+
+export interface IMiniProduct {
+  productId: string;
+  price: number;
+  name: string;
+  gender: "Men" | "Women";
+  category: {
+    categoryId: string;
+    categoryName: string;
+  };
+  variants: {
+    variantId: string;
+    color: string;
+    images: {
+      productImageId: string;
+      url: string;
+    }[];
+  }[];
+}
+
+export interface IWishListProduct {
+  wishListId: string;
+  product: IMiniProduct;
 }

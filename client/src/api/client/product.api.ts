@@ -2,14 +2,17 @@ import {
   IFilterProduct,
   IFilterProducts,
   IFilterTypes,
+  IMiniProduct,
   IProduct,
+  IProductReviews,
 } from "@/interfaces/product.interfaces";
-import { axiosInstance } from "../index.api";
+import { axiosInstance, privateAxiosInstance } from "../index.api";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
+import { IProductReviewDTO } from "@/dtos/product.dto";
 
 export const getAllProductClient = async (
-  filters: IFilterProduct | undefined,
-): Promise<IApiResponse<IProduct[]>> => {
+  filters: IFilterProduct,
+): Promise<IApiResponse<IMiniProduct[]>> => {
   return (
     await axiosInstance.get("/user/product/getProducts", {
       params: { filters },
@@ -18,7 +21,7 @@ export const getAllProductClient = async (
 };
 
 export const getSpecificProductClient = async (
-  productId: string | undefined,
+  productId: string,
 ): Promise<IApiResponse<IProduct>> => {
   return (await axiosInstance.get(`/user/product/specificProduct/${productId}`))
     .data;
@@ -41,11 +44,45 @@ export const getFilterProductClient = async ({
 };
 
 export const getProductSuggestions = async (
-  productId: string | undefined,
-): Promise<IApiResponse<IProduct[]>> => {
+  productId: string,
+): Promise<IApiResponse<IMiniProduct[]>> => {
   return (
     await axiosInstance.get(
       `/user/product/specificProduct/productSuggestions/${productId}`,
+    )
+  ).data;
+};
+
+export const wishListProduct = async (
+  productId: string,
+  userId: string,
+): Promise<IApiResponse<null>> => {
+  return (
+    await privateAxiosInstance.post(
+      `/user/product/wishList/${userId}/${productId}`,
+    )
+  ).data;
+};
+
+export const productReviews = async (
+  productId: string,
+): Promise<IApiResponse<IProductReviews[]>> => {
+  return (
+    await axiosInstance.get(
+      `/user/product/specificProduct/reviews/${productId}`,
+    )
+  ).data;
+};
+
+export const addProductReviews = async (
+  productId: string,
+  userId: string,
+  review: IProductReviewDTO,
+): Promise<IApiResponse<null>> => {
+  return (
+    await privateAxiosInstance.post(
+      `/user/product/reviewProduct/${userId}/${productId}`,
+      review,
     )
   ).data;
 };

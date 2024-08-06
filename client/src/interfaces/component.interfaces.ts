@@ -31,3 +31,11 @@ export interface ICheckBoxInputProps {
   selectedValue: string;
   handleSelect: (value: string) => void;
 }
+
+export interface IDialogProps {
+  buttonName: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  handleClick: () => void;
+}

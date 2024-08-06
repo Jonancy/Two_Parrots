@@ -19,16 +19,18 @@ enum Role {
 }
 
 model Users {
-  userId      String   @id @default(cuid())
+  userId      String         @id @default(cuid())
   name        String
-  email       String   @unique
+  email       String         @unique
   phoneNumber String?
-  picture     String?  @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
+  picture     String?        @default("https://res.cloudinary.com/dr1giexhn/image/upload/v1715435659/userProfile/pfp_ehyg3e.png")
   password    String?
   location    String?
-  role        Role     @default(User)
-  updatedAt   DateTime @updatedAt()
-  createdAt   DateTime @default(now())
+  role        Role           @default(User)
+  updatedAt   DateTime       @updatedAt()
+  createdAt   DateTime       @default(now())
+  wishlist    WishListItem[]
+  review      Review[]
 }
 
 enum Gender {
@@ -49,7 +51,9 @@ model Products {
   createdAt   DateTime          @default(now())
   category    Categories        @relation(fields: [categoryId], references: [categoryId])
   variants    ProductVariants[]
-  OrderItem   OrderItems[]
+  orderItem   OrderItems[]
+  wishlist    WishListItem[]
+  review      Review[]
 }
 
 model Categories {
@@ -67,7 +71,7 @@ model ProductVariants {
   images    ProductImages[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
-  OrderItem OrderItems[]
+  orderItem OrderItems[]
 }
 
 model ProductSizes {
@@ -78,7 +82,7 @@ model ProductSizes {
   variantId String
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
-  OrderItem OrderItems[]
+  orderItem OrderItems[]
 }
 
 model ProductImages {
@@ -132,4 +136,28 @@ model OrderItems {
   price       Float
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt()
+}
+
+model WishListItem {
+  wishListId String   @id @default(cuid())
+  userId     String
+  productId  String
+  user       Users    @relation(fields: [userId], references: [userId])
+  product    Products @relation(fields: [productId], references: [productId])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt()
+
+  @@unique([userId, productId])
+}
+
+model Review {
+  reviewId  String   @id @default(cuid())
+  rating    Int
+  comment   String
+  productId String
+  userId    String
+  user      Users    @relation(fields: [userId], references: [userId])
+  product   Products @relation(fields: [productId], references: [productId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }

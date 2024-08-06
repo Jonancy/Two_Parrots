@@ -6,20 +6,23 @@ import ProductCard from "@/components/product/card";
 import {
   useGetUserOrdersQuery,
   useGetUserProfileQuery,
+  useGetUserWishListQuery,
 } from "@/hooks/queries/user/user.query";
 import { useParams } from "react-router-dom";
+import { useState } from "react";
 
 export default function MainProfile() {
   const { userId } = useParams();
   console.log(userId);
+  const [isEnabled, setIsEnabled] = useState<boolean>(false);
 
   const userDetails = useGetUserProfileQuery(userId);
 
   const orderDetails = useGetUserOrdersQuery(userId);
 
-  console.log(orderDetails);
+  const wishListDetails = useGetUserWishListQuery(userId, isEnabled);
 
-  console.log(userDetails);
+  console.log(wishListDetails);
 
   if (userDetails.isLoading) {
     return <p>loading...</p>;
@@ -40,6 +43,15 @@ export default function MainProfile() {
 
   console.log(userDetails?.data?.data?.picture);
   console.log(userDetails?.data?.data);
+
+  const handleWishListTab = () => {
+    if (!isEnabled) {
+      console.log("asas");
+
+      setIsEnabled(true);
+    }
+    console.log("asas");
+  };
 
   return (
     <div className="flex flex-col bg-muted/40 p-6">
@@ -72,7 +84,9 @@ export default function MainProfile() {
           <Tabs defaultValue="orders" className="w-full">
             <TabsList className="border-b">
               <TabsTrigger value="orders">Orders</TabsTrigger>
-              <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
+              <TabsTrigger value="wishlist" onMouseEnter={handleWishListTab}>
+                Wishlist
+              </TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
             </TabsList>
             <TabsContent value="orders" className="pt-6">
@@ -89,7 +103,9 @@ export default function MainProfile() {
             </TabsContent>
             <TabsContent value="wishlist" className="pt-6">
               <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                <ProductCard />
+                {wishListDetails.data?.data.map((product) => (
+                  <ProductCard {...product.product} />
+                ))}
                 {/* <div>
                   <div>
                     <img

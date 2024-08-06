@@ -11,11 +11,16 @@ export const checkProductExists = async (
     const productId = req.params.productId;
     console.log(productId);
 
+    if (!productId) {
+      throw new CustomError("Provide a product id please", 404);
+    }
+
     const productExists = await productService.getProductById(productId);
 
     if (!productExists) {
       throw new CustomError("No product found", 404);
     }
+
     next();
   } catch (e) {
     next(e);

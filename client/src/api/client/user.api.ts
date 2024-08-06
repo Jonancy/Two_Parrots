@@ -3,6 +3,7 @@ import { axiosInstance, privateAxiosInstance } from "../index.api";
 import { IOrderTableDetails } from "@/interfaces/order.interfaces";
 import { IUserState } from "@/interfaces/user.interfaces";
 import { IPasswordChangeDTO } from "@/dtos/user.dto";
+import { IWishListProduct } from "@/interfaces/product.interfaces";
 
 export const getUserProfileDetails = async (userId: string | undefined) => {
   return (await privateAxiosInstance.get(`/user/profile/${userId}`)).data;
@@ -36,4 +37,11 @@ export const updateUserPasswordDetails = async (
   return (
     await privateAxiosInstance.patch(`/user/updateUserPass/${id}`, userDetails)
   ).data;
+};
+
+export const specificUsersWishList = async (
+  userId: string | undefined,
+): Promise<IApiResponse<IWishListProduct[] | []>> => {
+  return (await privateAxiosInstance.get(`/user/product/wishList/${userId}`))
+    .data;
 };

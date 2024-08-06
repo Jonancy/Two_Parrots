@@ -1,10 +1,11 @@
-import { LoginUser, RegisterUser } from "@/api/auth/auth.api";
+import { LoginUser, LogoutUser, RegisterUser } from "@/api/auth/auth.api";
 import { toast } from "@/components/ui/use-toast";
 import CustomError from "@/handlers/errors/customError";
 import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 import { ILoginDTO, IUserRegisterDTO } from "@/interfaces/auth.interfaces";
 import { IUserWithAccessToken } from "@/interfaces/user.interfaces";
-import { setData } from "@/redux/slice/userSlice";
+import { clearData, setData } from "@/redux/slice/userSlice";
+import store from "@/redux/store/reduxStore";
 import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 
@@ -58,6 +59,29 @@ export const useRegisterUserQuery = (): UseMutationResult<
         title: e.response.data.message,
         duration: 2000,
       });
+    },
+  });
+};
+
+export const useLogoutUserQuery = (): UseMutationResult<
+  IApiResponse<null>,
+  CustomError
+> => {
+  return useMutation({
+    mutationFn: LogoutUser,
+    onSettled: (success, error) => {
+      if (success) {
+        store.dispatch(clearData());
+        toast({
+          title: success.message,
+        });
+      }
+
+      if (error) {
+        toast({
+          title: error.response.data.message,
+        });
+      }
     },
   });
 };

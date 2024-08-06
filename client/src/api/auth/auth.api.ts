@@ -10,15 +10,19 @@ import { IApiResponse } from "@/interfaces/apiResponse.interfaces";
 import { axiosInstance } from "../index.api";
 
 export const RegisterUser = async (
-  form: IUserRegisterDTO
+  form: IUserRegisterDTO,
 ): Promise<IApiResponse<IUserWithAccessToken>> => {
   return (await axiosInstance.post("/auth/registerUser", form)).data;
 };
 
 export const LoginUser = async (
-  form: ILoginDTO
+  form: ILoginDTO,
 ): Promise<IApiResponse<IUserWithAccessToken>> => {
   return (await axiosInstance.post("/auth/loginUser", form)).data;
+};
+
+export const LogoutUser = async (): Promise<IApiResponse<null>> => {
+  return (await axiosInstance.post("/auth/logout")).data;
 };
 
 export const getUsers = async (): Promise<IApiResponse<IUserState[]>> => {

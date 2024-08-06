@@ -74,3 +74,11 @@ export const updateProductSizes = async (
     )
   ).data;
 };
+
+export const softDeleteProduct = async (
+  productId: string,
+): Promise<IApiResponse<null>> => {
+  return (
+    await privateAxiosInstance.delete(`/admin/product/${productId}/softDelete`)
+  ).data;
+};

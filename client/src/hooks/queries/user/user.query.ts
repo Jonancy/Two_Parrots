@@ -15,11 +15,13 @@ import CustomError from "@/handlers/errors/customError";
 import {
   getUserProfileDetails,
   specificUsersOrders,
+  specificUsersWishList,
   updateUserGeneralDetails,
   updateUserPasswordDetails,
 } from "@/api/client/user.api";
 import { IOrderTableDetails } from "@/interfaces/order.interfaces";
 import { IPasswordChangeDTO, IUpdateUserDetailsDTO } from "@/dtos/user.dto";
+import { IWishListProduct } from "@/interfaces/product.interfaces";
 
 export const useGetUsersQuery = (): UseQueryResult<
   IApiResponse<IUserState[] | []>,
@@ -53,6 +55,17 @@ export const useGetUserOrdersQuery = (
   return useQuery({
     queryKey: ["clientOrders", userId],
     queryFn: () => specificUsersOrders(userId),
+  });
+};
+
+export const useGetUserWishListQuery = (
+  userId: string | undefined,
+  isEnabled: boolean,
+): UseQueryResult<IApiResponse<IWishListProduct[] | []>, CustomError> => {
+  return useQuery({
+    queryKey: ["clientWishLists", userId],
+    queryFn: () => specificUsersWishList(userId),
+    enabled: isEnabled,
   });
 };
 

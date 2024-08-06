@@ -11,6 +11,7 @@ export interface IProduct {
   gender: string;
   category: ICategory;
   variants: IVariant[];
+  wishlist?: IWishList[];
   createdAt: string;
 }
 
@@ -19,6 +20,21 @@ export interface IVariant {
   color: string;
   sizes: ISize[];
   images: IImage[];
+}
+
+export interface IWishList {
+  userId: string;
+}
+
+export interface IProductReviews {
+  reviewId: string;
+  comment: string;
+  createdAt: Date;
+  user: {
+    name: string;
+    userId: string;
+    picture: string;
+  };
 }
 
 export interface ISize {
@@ -50,7 +66,7 @@ export interface IFilterTypes {
 
 //!For res purposes
 export interface IFilterProducts {
-  products: IProduct[];
+  products: IMiniProduct[];
   totalPages: number;
   currentPage: number;
 }
@@ -59,11 +75,13 @@ export interface IFilterProducts {
 export interface IFilterProduct {
   page?: number;
   limit?: number;
+  isEnabled?: boolean;
   filters?: {
     gender?: string;
     categories?: string[];
     colors?: string[];
     isDeleted?: boolean;
+    searchName?: string;
   };
 }
 
@@ -72,4 +90,28 @@ export interface TProductCard {
   name: string;
   image: string;
   price: number;
+}
+
+export interface IMiniProduct {
+  productId: string;
+  price: number;
+  name: string;
+  gender: "Men" | "Women";
+  category: {
+    categoryId: string;
+    categoryName: string;
+  };
+  variants: {
+    variantId: string;
+    color: string;
+    images: {
+      productImageId: string;
+      url: string;
+    }[];
+  }[];
+}
+
+export interface IWishListProduct {
+  wishListId: string;
+  product: IMiniProduct;
 }

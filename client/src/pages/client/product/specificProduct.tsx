@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import { FaHeart, FaStar } from "react-icons/fa";
 import Button from "@/components/buttons/button";
 // import SelectInput from "@/components/inputs/selectInput";
 import {
@@ -11,44 +11,57 @@ import {
 } from "@/interfaces/product.interfaces";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addItem } from "@/redux/slice/cartSlice";
 import {
+  useAddProductReviewQuery,
+  useGetProductReviewsQuery,
   useGetProductSuggestionsQuery,
   useGetSpecificProductQuery,
+  useWishListProduct,
 } from "@/hooks/queries/product/product.query";
 import { SetAddToCartNoti } from "@/helpers/addToCartNoti-helper";
 import { toast } from "@/components/ui/use-toast";
 import { ProductDisplay } from "../home";
 import useIntersectionObserver from "@/hooks/useIntersection";
+import { RootState } from "@/redux/store/reduxStore";
+import ProductReviewCard from "@/components/cards/productReviewCard";
+import MainDialog from "@/components/dialog/mainDialog";
 
 export default function SpecificProduct() {
   const { productId } = useParams();
   const dispatch = useDispatch();
 
+  const { userId } = useSelector((state: RootState) => state.user);
+
+  const [selectedSize, setSelectedSize] = useState<ISize>();
+  const [variantIndex, setVariantIndex] = useState<number>(0);
+  const [sizeIndex, setSizeIndex] = useState<number>(0);
+  const [selectedVariant, setSelectedVariant] = useState<IVariant>();
+  const [quantity, setQuantity] = useState<number>(1);
+  const [mainPicture, setMainPicture] = useState<string | undefined>();
+
   const { data, error } = useGetSpecificProductQuery(productId);
 
   const { ref, isIntersecting } = useIntersectionObserver();
 
-  console.log(isIntersecting);
+  const { ref: ref2, isIntersecting: isIntersecting2 } =
+    useIntersectionObserver();
 
   const productSuggestions = useGetProductSuggestionsQuery(
     productId,
     isIntersecting,
   );
 
-  console.log(productSuggestions);
+  const reviewsQuery = useGetProductReviewsQuery(productId, isIntersecting2);
+
+  console.log(reviewsQuery);
+
+  const wishListQuery = useWishListProduct();
+
+  const addReviews = useAddProductReviewQuery();
 
   const product = data?.data;
-
-  const [selectedSize, setSelectedSize] = useState<ISize>();
-  const [variantIndex, setVariantIndex] = useState<number>(0);
-  const [sizeIndex, setSizeIndex] = useState<number>(0);
-
-  const [selectedVariant, setSelectedVariant] = useState<IVariant>();
-  const [quantity, setQuantity] = useState<number>(1);
-
-  const [mainPicture, setMainPicture] = useState<string | undefined>();
 
   useEffect(() => {
     if (data) {
@@ -57,8 +70,6 @@ export default function SpecificProduct() {
       setSelectedSize(selectedVariant?.sizes[sizeIndex]);
     }
   }, [data, product?.variants, selectedVariant]);
-
-  console.log(data);
 
   if (error) {
     return <p>{error.response.data.message}</p>;
@@ -80,12 +91,7 @@ export default function SpecificProduct() {
     }
   };
 
-  console.log(selectedSize);
-  console.log(quantity);
-
   const addToCart = () => {
-    console.log("asa");
-
     if (selectedSize && selectedVariant) {
       const { productId, name, price } = product as IProduct;
       const { variantId, color, images } = selectedVariant as IVariant;
@@ -100,22 +106,34 @@ export default function SpecificProduct() {
         quantity: quantity,
         price,
       };
-
-      console.log(cartItem);
-
       dispatch(addItem(cartItem));
       toast({ title: "New item added to the cart" });
       SetAddToCartNoti();
-      console.log("added");
     } else {
       alert("Please select a variant and size.");
     }
   };
 
+  const handleWishList = () => {
+    if (productId && userId) {
+      wishListQuery.mutate({ productId, userId });
+    }
+  };
+
+  const isLiked = data?.data.wishlist?.some((item) => item.userId == userId);
+
+  const handleReviewSubmit = (rating: number, comment: string) => {
+    if (userId && productId) {
+      addReviews.mutate({ userId, productId, review: { rating, comment } });
+    } else {
+      toast({ title: "Please log in to submit a review." });
+    }
+  };
+
   return (
-    <div className="mx-52">
-      <div className="mx-20 flex gap-10">
-        <div className="flex gap-4">
+    <div className="">
+      <div className="mx-[16rem] grid grid-cols-3 gap-10">
+        <div className="col-span-2 flex gap-4">
           <div className="flex flex-col gap-4">
             {selectedVariant?.images?.map((pic) => (
               <img
@@ -129,17 +147,23 @@ export default function SpecificProduct() {
           </div>
           <Zoom>
             <img
-              className="h-[44rem] w-[32rem] object-cover"
+              className="h-[44rem] object-cover"
               src={mainPicture}
               alt="Main product"
             />
           </Zoom>
         </div>
-        <div className="w-[30rem]">
+        <div className="col-span-1">
           <div className="flex flex-col gap-8 border-b-2 pb-8">
             <div className="flex flex-col gap-4">
               <h1 className="text-4xl font-bold">{product?.name}</h1>
-              <p className="text-sm font-semibold">{product?.description}</p>
+              <p className="text-sm font-semibold">
+                {product?.description} dhushd ushduhsu dh
+                shdushdushuhushdushhdusdudhdu su dhushduhhdshuddsuhdu shdu
+                shduhsudhsu dushdusdu sd h dhushd ushduhsu dh
+                shdushdushuhushdushhdusdudhdu su dhushduhhdshuddsuhdu shdu
+                shduhsudhsu dushdusdu sd h
+              </p>
               <div className="flex items-center gap-4">
                 <div className="flex gap-2">
                   <FaStar className="text-xl" />
@@ -149,6 +173,10 @@ export default function SpecificProduct() {
                   <FaStar className="text-xl" />
                 </div>
                 <p className="text-2xl font-semibold">NRS 3000</p>
+                <FaHeart
+                  className={`${isLiked ? "text-red-500" : "text-gray-300"} cursor-pointer text-3xl`}
+                  onClick={handleWishList}
+                />
               </div>
             </div>
             <div className="flex flex-col gap-4">
@@ -157,6 +185,7 @@ export default function SpecificProduct() {
                 <div className="flex gap-2">
                   {product?.variants?.map((color, index) => (
                     <div
+                      role="button"
                       key={color.variantId}
                       className="flex w-fit cursor-pointer items-center gap-1 rounded-md bg-slate-200 p-2"
                       onClick={() => handleVariantChange(index)}
@@ -230,6 +259,23 @@ export default function SpecificProduct() {
           </div>
         </div>
       </div>
+      <div className="mt-10 bg-gray-50 px-20 py-10" ref={ref2}>
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-semibold">Customer Reviews</h1>
+          {/* <Button buttonName="Add review"></Button> */}
+          <MainDialog buttonName="Add review">
+            <ReviewForm onSubmit={handleReviewSubmit} />
+          </MainDialog>
+        </div>
+        {reviewsQuery?.data?.data.map((review) => (
+          <ProductReviewCard
+            comment={review.comment}
+            name={review.user.name}
+            picture={review.user.picture}
+            rating={review}
+          />
+        ))}
+      </div>
       <div ref={ref}>
         <ProductDisplay
           isLoading={productSuggestions.isLoading}
@@ -237,5 +283,58 @@ export default function SpecificProduct() {
         />
       </div>
     </div>
+  );
+}
+interface ReviewFormProps {
+  onSubmit: (rating: number, comment: string) => void;
+}
+
+function ReviewForm({ onSubmit }: ReviewFormProps) {
+  const [rating, setRating] = useState<number>(0);
+  const [comment, setComment] = useState<string>("");
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    onSubmit(rating, comment);
+    setRating(0); // Reset form after submission
+    setComment("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="mb-4">
+        <label htmlFor="rating" className="block text-sm font-medium">
+          Rating
+        </label>
+        <input
+          id="rating"
+          type="number"
+          value={rating}
+          onChange={(e) => setRating(parseInt(e.target.value, 10))}
+          className="w-full border-2 p-2"
+          min="1"
+          max="5"
+          required
+        />
+      </div>
+      <div className="mb-4">
+        <label htmlFor="comment" className="block text-sm font-medium">
+          Comment
+        </label>
+        <textarea
+          id="comment"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          className="h-[6rem] w-full border-2 p-2"
+          required
+        ></textarea>
+      </div>
+      <button
+        type="submit"
+        className="rounded bg-blue-500 px-4 py-2 text-white"
+      >
+        Submit Review
+      </button>
+    </form>
   );
 }

@@ -39,3 +39,9 @@ adminProductRoutes.patch(
   "/:variantId/updateProuctSize",
   productController.updateProductSize
 );
+
+adminProductRoutes.delete(
+  "/:productId/softDelete",
+  checkProductExists,
+  productController.softDeleteProduct
+);

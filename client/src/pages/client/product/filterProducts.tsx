@@ -1,6 +1,5 @@
-import ColorPalette from "@/components/buttons/colorPaletteButton";
-import ProductCard from "@/components/cards/productCard";
 import CheckBoxInput from "@/components/inputs/checkBoxInput";
+import ProductCard from "@/components/product/card";
 import { colorOptions } from "@/constants/filterOptions";
 import {
   useGetClientFilterProductsQuery,
@@ -36,6 +35,7 @@ const CategoriesInput = ({
     </div>
   );
 };
+
 export default function FilterProducts() {
   const filterTypes = useGetFilterTypes();
 
@@ -122,15 +122,20 @@ export default function FilterProducts() {
   }, [products.isSuccess, products.data?.data.products]);
 
   const handleGenderSelect = (value: string) => {
-    if (selectedGender != value) {
-      setSelectedGender(value);
-      setFilters((prevFilters) => ({ ...prevFilters, gender: value }));
-      searchParams.append("gender", value);
-    } else {
-      setSelectedGender(undefined);
-      setFilters((prevFilter) => ({ ...prevFilter, gender: undefined }));
+    const isSelected = selectedGender === value;
+
+    setSelectedGender(isSelected ? undefined : value);
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      gender: isSelected ? undefined : value,
+    }));
+
+    if (isSelected) {
       searchParams.delete("gender");
+    } else {
+      searchParams.set("gender", value);
     }
+
     navigate(`/product/filter-products?${searchParams.toString()}`);
   };
 
@@ -144,6 +149,7 @@ export default function FilterProducts() {
         ...prevFilters,
         categories: updatedValues,
       }));
+
       if (updatedValues.length > 0) {
         searchParams.set("categories", updatedValues.join(","));
       } else {
@@ -173,13 +179,14 @@ export default function FilterProducts() {
       return updatedColors;
     });
   };
+
   console.log(selectedColor);
   console.log(filters);
 
   console.log(selectedGender);
 
   return (
-    <div className="grid grid-cols-3 px-20 py-10">
+    <div className="grid grid-cols-4 px-20 py-10">
       <div className="col-span-1">
         <p>Filter products</p>
         <div className="mt-2 flex flex-col gap-4">
@@ -211,7 +218,7 @@ export default function FilterProducts() {
               <button
                 type="button"
                 key={color}
-                className={`mr-2 h-8 w-8 rounded-full border ${
+                className={`mr-2 h-6 w-6 rounded-full border ${
                   selectedColor.includes(color)
                     ? "ring-2 ring-indigo-500 ring-offset-2"
                     : ""
@@ -223,7 +230,7 @@ export default function FilterProducts() {
           </div>
         </div>
       </div>
-      <div className="col-span-2 grid grid-cols-3 gap-4">
+      <div className="col-span-3 grid grid-cols-4 gap-6">
         {productLists.map((product, index) => (
           <span
             key={product.productId}

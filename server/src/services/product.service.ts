@@ -4,17 +4,25 @@ import {
   IFilterProduct,
   IFilterProducts,
   IFilterTypes,
+  IMiniProduct,
   IProduct,
+  IProductReviews,
   ISize,
   IVariant,
+  IWishListProduct,
 } from "../interfaces/product.interfaces";
 import {
   IProductDTO,
   IProductPictureDTO,
+  IProductReviewDTO,
   ISizeUpdateDTO,
 } from "../dtos/product.dto";
-import { productSelectFields } from "../utils/prismaSelectQueries";
+import {
+  productMiniSelectFields,
+  productSelectFields,
+} from "../utils/prismaSelectQueries";
 import CustomError from "../handlers/errors/customError";
+import { deleteImageCloudinary } from "../middlewares/upload/upload.middleware";
 
 class ProductService {
   createProduct = async (data: IProductDTO): Promise<Products | null> => {
@@ -82,7 +90,32 @@ class ProductService {
     return product;
   };
 
-  getProductSuggestions = async (productId: string): Promise<IProduct[]> => {
+  getMiniProductDetails = async (): Promise<IMiniProduct[]> => {
+    const product = await prisma.products.findMany({
+      select: productMiniSelectFields,
+    });
+
+    return product;
+  };
+
+  getSpecificProductReviews = async (
+    productId: string
+  ): Promise<IProductReviews[]> => {
+    const product = await prisma.review.findMany({
+      where: { productId },
+      select: {
+        reviewId: true,
+        comment: true,
+        createdAt: true,
+        user: { select: { userId: true, name: true, picture: true } },
+      },
+    });
+    return product;
+  };
+
+  getProductSuggestions = async (
+    productId: string
+  ): Promise<IMiniProduct[]> => {
     const product = await prisma.products.findFirst({
       where: { productId },
       select: { category: true },
@@ -94,7 +127,7 @@ class ProductService {
         category: { categoryName: product.category.categoryName },
       },
       take: 6,
-      select: productSelectFields,
+      select: productMiniSelectFields,
     });
 
     return productSuggestions;
@@ -104,8 +137,8 @@ class ProductService {
     filters,
     limit = 6,
     page = 1,
-  }: IFilterProduct): Promise<IProduct[]> => {
-    let whereClause: Prisma.ProductsWhereInput = {};
+  }: IFilterProduct): Promise<IMiniProduct[]> => {
+    let whereClause: Prisma.ProductsWhereInput = { isDeleted: false };
 
     const offset = (page - 1) * limit;
 
@@ -114,7 +147,7 @@ class ProductService {
     }
 
     const product = await prisma.products.findMany({
-      select: productSelectFields,
+      select: productMiniSelectFields,
       take: limit,
       where: whereClause,
       skip: offset,
@@ -174,6 +207,10 @@ class ProductService {
       };
     }
 
+    if (filters?.searchName != undefined) {
+      whereClause.name = { contains: filters?.searchName, mode: "insensitive" };
+    }
+
     if (filters?.colors?.length > 0 && filters?.colors) {
       whereClause.variants = {
         some: {
@@ -188,7 +225,7 @@ class ProductService {
       skip: offset,
       take: limit,
       where: whereClause,
-      select: productSelectFields,
+      select: productMiniSelectFields,
       orderBy: [{ createdAt: "asc" }],
     });
 
@@ -222,7 +259,32 @@ class ProductService {
     files: string[]
   ) => {
     if (variant) {
-      const updateImage = await prisma.productImages.deleteMany({
+      await Promise.all(
+        variant.images.map(async (url) => {
+          const images = await prisma.productImages.findMany({
+            where: {
+              productImageId: url.productImageId,
+            },
+          });
+
+          if (images.length === 0) {
+            throw new CustomError(
+              `No images found for productImageId: ${url.productImageId}`,
+              404
+            );
+          }
+
+          // Map over the images and delete them from Cloudinary
+          const imageDeletionPromises = images.map(async (image) => {
+            return deleteImageCloudinary(image.url);
+          });
+
+          // Wait for all deletions to complete
+          return Promise.all(imageDeletionPromises);
+        })
+      );
+
+      await prisma.productImages.deleteMany({
         where: {
           variantId: variant.variantId,
           productImageId: {
@@ -230,26 +292,16 @@ class ProductService {
           },
         },
       });
-
-      // if (!updateImage) {
-      //   throw new CustomError("Deletion of the picture failed", 400);
-      // }
     }
 
     if (files.length > 0 && files) {
-      const newImages = await prisma.productImages.createMany({
+      await prisma.productImages.createMany({
         data: files.map((image) => ({
           url: image,
           variantId: variant.variantId,
         })),
       });
-
-      // if (!newImages) {
-      //   throw new CustomError("Addition of the picture failed", 400);
-      // }
     }
-
-    return true;
   };
 
   updateProductSize = async (
@@ -257,10 +309,70 @@ class ProductService {
     variantId: string
   ) => {
     const updatedSize = await prisma.productSizes.update({
-      where: { sizeId: sizeId, variantId: variantId },
+      where: { sizeId, variantId },
       data: { stock: stock },
     });
     return !!updatedSize;
+  };
+
+  softDeleteProduct = async (productId: string) => {
+    const product = await prisma.products.update({
+      where: { productId },
+      data: { isDeleted: true },
+    });
+
+    return !!product;
+  };
+
+  checkProductWishList = async (productId: string, userId: string) => {
+    const product = await prisma.wishListItem.findFirst({
+      where: { productId, userId },
+    });
+
+    return !!product;
+  };
+
+  addProductWishList = async (productId: string, userId: string) => {
+    const product = await prisma.wishListItem.create({
+      data: { userId, productId },
+    });
+
+    return !!product;
+  };
+
+  deleteProductWishList = async (productId: string, userId: string) => {
+    const product = await prisma.wishListItem.delete({
+      where: {
+        userId_productId: {
+          userId,
+          productId,
+        },
+      },
+    });
+
+    return !!product;
+  };
+
+  addProductReviews = async (
+    productId: string,
+    userId: string,
+    review: IProductReviewDTO
+  ) => {
+    const product = await prisma.review.create({
+      data: { productId, userId, ...review },
+    });
+
+    return !!product;
+  };
+
+  getWishlist = async (userId: string): Promise<IWishListProduct[]> => {
+    return await prisma.wishListItem.findMany({
+      where: { userId },
+      select: {
+        wishListId: true,
+        product: { select: productMiniSelectFields },
+      },
+    });
   };
 }
 

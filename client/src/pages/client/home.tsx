@@ -4,18 +4,15 @@ import ProductCard from "@/components/product/card";
 import MainSlider from "@/components/slider/mainSlider";
 import useIntersectionObserver from "@/hooks/useIntersection";
 import SkeletonLoader from "@/components/loader/skeletonLoader";
-import { IProduct } from "@/interfaces/product.interfaces";
+import { IMiniProduct } from "@/interfaces/product.interfaces";
 
 export const ProductDisplay = ({
   products,
   isLoading,
 }: {
-  products: IProduct[] | undefined;
+  products: IMiniProduct[] | undefined;
   isLoading: boolean;
 }) => {
-  console.log(products);
-  console.log(isLoading);
-
   return (
     <MainSlider>
       {!isLoading

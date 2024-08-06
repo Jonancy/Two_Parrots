@@ -85,3 +85,20 @@ export const handleMultipleFileUpload = (
     }
   };
 };
+
+export const deleteImageCloudinary = async (url: string) => {
+  // try {
+  const publicId = url.split("/").slice(-1)[0].split(".")[0];
+  console.log(publicId);
+  const image = `${publicId}`;
+
+  const result = await cloudinary.uploader.destroy(image);
+  console.log(result);
+
+  if (result.result === "not found") {
+    throw new CustomError(
+      `No images found for public id: ${publicId} on the cloud`,
+      404
+    );
+  }
+};

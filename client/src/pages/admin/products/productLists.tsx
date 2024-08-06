@@ -7,10 +7,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
-import { useGetAllAdminProductsQuery } from "@/hooks/queries/product/product.query";
+import {
+  useGetAllAdminProductsQuery,
+  useSoftDeleteProductQuery,
+} from "@/hooks/queries/product/product.query";
 import Button from "@/components/buttons/button";
 import { useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
+import MainDialog from "@/components/dialog/mainDialog";
 
 const ProductLists = () => {
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
@@ -20,6 +24,9 @@ const ProductLists = () => {
     page,
     filters: { isDeleted },
   });
+
+  const softDeleteProduct = useSoftDeleteProductQuery();
+
   const navigate = useNavigate();
 
   console.log(allProducts);
@@ -34,12 +41,15 @@ const ProductLists = () => {
 
   console.log(isDeleted);
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
-    setPage(newPage);
+  const handleDeleteProduct = (productId: string) => {
+    softDeleteProduct.mutate({ productId });
   };
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   newPage: number,
+  // ) => {
+  //   setPage(newPage);
+  // };
 
   // const handleChangeRowsPerPage = (
   //   event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -134,13 +144,21 @@ const ProductLists = () => {
                     }
                     buttonName="Edit product"
                   ></Button>
-                  <Button
+                  <MainDialog
+                    buttonName="Delete"
+                    description="Soft delete this item"
+                    title="Delete this item"
+                    handleClick={() => handleDeleteProduct(product.productId)}
+                  >
+                    <p>Are you sure you want to delete this product?</p>
+                  </MainDialog>
+                  {/* <Button
                     buttonName="Delete Product"
                     handleOnClick={() =>
                       navigate("/dashboard/products/add-products")
                     }
                     className=""
-                  ></Button>
+                  ></Button> */}
                 </TableCell>
               </TableRow>
             ))
